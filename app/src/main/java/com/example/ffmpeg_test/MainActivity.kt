@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity(),  SurfaceHolder.Callback{
         binding.mainTvTest.setOnClickListener {
             Log.d(TAG, "onCreate: setOnClickListener")
             //子线程进行视频渲染
-            // Thread { nativePlayVideo(path, binding.mainSvTest.holder.surface) }.start()
             nativePlayVideo(path, binding.mainSvTest.holder.surface)
         }
         binding.mainSvTest.holder.setFormat(PixelFormat.RGBA_8888)
