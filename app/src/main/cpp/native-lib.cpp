@@ -1,6 +1,3 @@
-//
-// Created by cxp on 2018/11/13.
-//
 
 #include <jni.h>
 #include <string>
