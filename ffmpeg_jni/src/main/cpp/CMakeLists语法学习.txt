@@ -35,6 +35,14 @@ MESSAGE("HI ${CMAKE_ANDROID_ARCH_ABI}")
 # 设置扫描 so 库对应的请求头目录
 INCLUDE_DIRECTORIES(${third_part_header_path})
 
+##################################################################
+
+// aux_source_directory: 是 CMake 提供的函数，用于将指定目录下的源文件自动添加到变量中。
+//   （${CMAKE_SOURCE_DIR}: 是 CMake 预定义的变量，表示当前 CMakeLists.txt 文件所在的源码根目录路径。SRC_LIST: 是用户指定的变量名，用于存储找到的源文件列表）
+aux_source_directory(${CMAKE_SOURCE_DIR} SRC_LIST)
+
+##################################################################
+
 find_library( # Sets the name of the path variable.
         log-lib
 
@@ -107,6 +115,39 @@ add_library(swscale
 set_target_properties(swscale
         PROPERTIES IMPORTED_LOCATION
         ${third_part_lib_path}/libswscale-3.so)
+
+##################################################################
+
+# 添加共享库搜索路径
+# 可以代替
+#add_library(avcodec SHARED IMPORTED)
+#set_target_properties(avcodec
+#        PROPERTIES IMPORTED_LOCATION
+#        ${third_part_lib_path}/libavcodec-56.so)
+# 没有效果, 不知道是不是 so 要放到 jniLibs 目录
+# 官方是不推荐使用这个的, 官方推荐使用 推荐使用find_package和find_library寻找共享库的绝对路径，再传给target_link_libraries使用
+#link_directories(${path_lib_ffmpeg}/${CMAKE_ANDROID_ARCH_ABI})
+
+# 批量导入库
+# 获取指定路径的 so 库, 放到 SO_PATH_LIST 集合中
+FILE(GLOB SO_PATH_LIST "${path_lib_ffmpeg_libs}/${CMAKE_ANDROID_ARCH_ABI}/*.so")
+# 循环 SO_PATH_LIST 集合
+foreach(_SO_PATH ${SO_PATH_LIST})
+#    从路径中截取文件名称
+    STRING(REGEX REPLACE ".+/(.+)\\..*" "\\1" SO_NAME ${_SO_PATH})
+#   将文件名称拼接到新的集合 GAME_SOURCE_MINE 里面
+    list(APPEND SO_NAME_LIST ${SO_NAME})
+#    导入第三方库(ffmpeg)
+    add_library(${SO_NAME} SHARED IMPORTED)
+#    第三方库的本地路径
+    set_target_properties(${SO_NAME}
+            PROPERTIES IMPORTED_LOCATION
+            ${_SO_PATH})
+endforeach()
+#  打印 GAME_SOURCE_MINE 集合
+MESSAGE("tianshenkk ${SO_NAME_LIST}")
+
+##################################################################
 
 # 将我们自己编写的库与第三方库进行关联
 target_link_libraries(
