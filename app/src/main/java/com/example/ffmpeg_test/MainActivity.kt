@@ -1,53 +1,42 @@
 package com.example.ffmpeg_test
 
 import android.annotation.SuppressLint
-import android.graphics.PixelFormat
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.view.SurfaceHolder
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
+import com.example.ffmpeg_test.jni.FFmpegJni
+import com.example.ffmpeg_test.uitls.PermissionUtil
+import java.io.File
 
-class MainActivity : AppCompatActivity(),  SurfaceHolder.Callback{
-
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initPermission()
         initView()
+        invokeJni()
+    }
+    private fun initPermission() {
+        PermissionUtil.requestSDCardPermission(this@MainActivity, 1002) { }
+    }
+
+    private fun invokeJni() {
+        FFmpegJni().apply {
+            val input = File(path)
+            if (!input.exists()) throw RuntimeException(input.absolutePath + " 文件不存在")
+            initConfig(path)
+        }
     }
 
     private fun initView() {
-        binding.mainTvTest.text = ffmpegInfo()
-        Log.d(TAG, "onCreate: ${getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}")
-
-        binding.mainSvTest.holder.addCallback(this)
-        binding.mainTvTest.setOnClickListener {
-            Log.d(TAG, "onCreate: setOnClickListener")
-            //子线程进行视频渲染
-        }
-        binding.mainSvTest.holder.setFormat(PixelFormat.RGBA_8888)
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        Log.d(TAG, "surfaceCreated: ")
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-    }
 
     companion object {
         private const val TAG = "MainActivity11"
         @SuppressLint("SdCardPath")
-        private val path = "/sdcard/DCIM/Camera/VID_20231008_094739.mp4"
-        init {
-            System.loadLibrary("native-lib")
-        }
+        private val path = "/storage/emulated/0/input.mp4"
     }
 }

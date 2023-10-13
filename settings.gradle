@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ffmpeg_test"
 include ':app'
-include ':ffmpeg_jni'
