@@ -1,27 +1,17 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-# Declares and names the project.
-
 project("ffmpeg_test")
 
-add_library( # Sets the name of the library.
+add_library(
         ffmpeg_test
-
-        # Sets the library as a shared library.
         SHARED
-
-        # Provides a relative path to your source file(s).
         dn_ffmepg_player.c)
 
-find_library( # Sets the name of the path variable.
+find_library(
         log-lib
-
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
         log)
 
 get_filename_component(third_part_jni_path ${CMAKE_CURRENT_SOURCE_DIR}/../jni ABSOLUTE)
-
 set(third_part_lib_path ${third_part_jni_path}/${CMAKE_ANDROID_ARCH_ABI})
 
 include_directories(${third_part_jni_path}/include)
@@ -76,7 +66,7 @@ set_target_properties(libyuv
         PROPERTIES IMPORTED_LOCATION
         ${third_part_lib_path}/libyuv.so)
 
-target_link_libraries( # Specifies the target library.
+target_link_libraries(
         ffmpeg_test
         avcodec
         avdevice
@@ -86,8 +76,6 @@ target_link_libraries( # Specifies the target library.
         postproc
         swresample
         swscale
-
         libyuv
-
         ${log-lib}
         ${log-android})
