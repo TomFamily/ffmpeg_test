@@ -189,14 +189,12 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
             // Decode video frame
             avcodec_decode_video2(avCodecContext, pFrame, &frameFinished, &packet);
 
-
-
             // 并不是decode一次就可解码出一帧
             if (frameFinished) {
-
-                //added by ws for AVfilter start
+                /**
+                 * added by ws for AVfilter start：添加特效
+                 */
                 pFrame->pts = av_frame_get_best_effort_timestamp(pFrame);
-
                 //* push the decoded frame into the filtergraph
                 if (av_buffersrc_add_frame(buffersrc_ctx, pFrame) < 0) {
                     logd("Could not av_buffersrc_add_frame");
@@ -210,7 +208,6 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
                 }
                 //added by ws for AVfilter end
 
-                // lock native window buffer
                 ANativeWindow_lock(nativeWindow, &windowBuffer, 0);
 
                 // 格式转换
