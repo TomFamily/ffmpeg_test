@@ -17,14 +17,14 @@
 AVFilterContext *buffersink_ctx;
 AVFilterContext *buffersrc_ctx;
 AVFilterGraph *filter_graph;
-const char *filters_descr = "lutyuv='u=128:v=128'";
 
 JNIEXPORT void JNICALL
 Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
         JNIEnv *env,
         jobject thiz,
         jstring path,
-        jobject surface
+        jobject surface,
+        jstring filterDescription
         ) {
     const char *j_path = (*env)->GetStringUTFChars(env, path, NULL);
     logd("%s", j_path)
@@ -61,13 +61,13 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
     // avfilter_get_by_name：通过给定的过滤器名称来查找并返回相应的 AVFilter 结构体指针。
     // AVFilter 结构体包含有关特定过滤器的信息，如名称、类型、输入输出端口等。
     AVFilter *buffersrc = avfilter_get_by_name("buffer");
-    //新版的ffmpeg库必须为buffersink
+    // 新版的ffmpeg库必须为buffersink
     AVFilter *buffersink = avfilter_get_by_name("buffersink");
     AVFilterInOut *outputs = avfilter_inout_alloc();
     AVFilterInOut *inputs = avfilter_inout_alloc();
     enum AVPixelFormat pix_fmts[] = {AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE};
     AVBufferSinkParams *avBufferSinkParams;
-    // avfilter_inout_free(&inputs);
+
     filter_graph = avfilter_graph_alloc();
 
     /* buffer video source: the decoded frames from the decoder will be inserted here. */
@@ -106,10 +106,12 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
     inputs->pad_idx = 0;
     inputs->next = NULL;
 
-    // avfilter_link(buffersrc_ctx, 0, buffersink_ctx, 0);
-
-    if ((ret = avfilter_graph_parse_ptr(filter_graph, filters_descr,
-                                        &inputs, &outputs, NULL)) < 0) {
+    // avfilter_graph_parse_ptr：根据规则字符串创建和配置相应的滤镜链
+    if ((ret = avfilter_graph_parse_ptr(
+            filter_graph,
+            (*env)->GetStringUTFChars(env, filterDescription, NULL),
+            &inputs, &outputs, NULL)
+                    ) < 0) {
         logd("Cannot avfilter_graph_parse_ptr\n")
         return;
     }
@@ -118,8 +120,6 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
         logd("Cannot avfilter_graph_config\n");
         return;
     }
-
-    //added by ws for AVfilter start------------init AVfilter------------------------------ws
 
     // Find the decoder for the video stream
     AVCodec *pCodec = avcodec_find_decoder(avCodecContext->codec_id);
@@ -229,7 +229,6 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
                 for (h = 0; h < videoHeight; h++) {
                     memcpy(dst + h * dstStride, src + h * srcStride, srcStride);
                 }
-
                 ANativeWindow_unlockAndPost(nativeWindow);
             }
 
@@ -237,21 +236,13 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideoWithFilter(
         av_packet_unref(&packet);
     }
 
+    avfilter_inout_free(&inputs);
+    avfilter_inout_free(&outputs);
     av_free(buffer);
     av_free(pFrameRGBA);
-
-    // Free the YUV frame
     av_free(pFrame);
-
-    avfilter_graph_free(&filter_graph); //added by ws for avfilter
-    // Close the codecs
+    //added by ws for avfilter
+    avfilter_graph_free(&filter_graph);
     avcodec_close(avCodecContext);
-
-    // Close the video file
     avformat_close_input(&avFormatContext);
-    return;
-}
-
-void openVideo(jstring path) {
-
 }

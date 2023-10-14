@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
+import com.example.ffmpeg_test.jni.FilterEffect
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import java.io.File
 
@@ -38,7 +39,8 @@ class MainActivity : AppCompatActivity() {
             thread?.interrupt()
             thread = Thread {
                 // 一定放在子现场操作，否则奔溃
-                Log.d(TAG, "invokeJni: ${fFmpegJni.playVideoWithFilter(path, binding.mainSvTest.holder.surface)}")
+                Log.d(TAG, "invokeJni: " +
+                        "${fFmpegJni.playVideoWithFilter(path, binding.mainSvTest.holder.surface, FilterEffect.DRAW_RECTS.value)}")
             }
             thread?.start()
         }
