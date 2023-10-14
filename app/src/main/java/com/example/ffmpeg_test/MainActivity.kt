@@ -11,6 +11,8 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val fFmpegJni by lazy { FFmpegJni() }
+    private var thread: Thread? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -24,16 +26,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invokeJni() {
-        FFmpegJni().apply {
-            val input = File(path)
-            if (!input.exists()) throw RuntimeException(input.absolutePath + " 文件不存在")
-            Log.d(TAG, "invokeJni: ${initConfig(path)}")
-        }
+        if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
+        Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(path)}")
     }
 
     private fun initView() {
+        binding.mainBtnTestPlay.setOnClickListener {
+            if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
+            thread?.interrupt()
+            thread = Thread {
+                // 一定放在子现场操作，否则奔溃
+                Log.d(TAG, "invokeJni: ${fFmpegJni.playVideo(path, binding.mainSvTest.holder.surface)}")
+            }
+            thread?.start()
+        }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        thread?.interrupt()
+    }
 
     companion object {
         private const val TAG = "MainActivity11"

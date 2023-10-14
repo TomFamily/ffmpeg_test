@@ -1,5 +1,7 @@
 package com.example.ffmpeg_test.jni
 
+import android.view.Surface
+
 class FFmpegJni {
     companion object {
         init {
@@ -19,4 +21,5 @@ class FFmpegJni {
     }
 
     external fun initConfig(input: String): String
+    external fun playVideo(path: String, surface: Surface): String
 }

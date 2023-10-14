@@ -11,6 +11,11 @@ find_library(
         log-lib
         log)
 
+find_library(
+        log-android
+        android
+)
+
 get_filename_component(third_part_jni_path ${CMAKE_CURRENT_SOURCE_DIR}/../jni ABSOLUTE)
 set(third_part_lib_path ${third_part_jni_path}/${CMAKE_ANDROID_ARCH_ABI})
 
