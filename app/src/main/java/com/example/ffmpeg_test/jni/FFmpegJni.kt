@@ -18,5 +18,5 @@ class FFmpegJni {
         }
     }
 
-    external fun initConfig(input: String)
+    external fun initConfig(input: String): String
 }

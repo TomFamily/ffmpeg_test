@@ -2,6 +2,7 @@ package com.example.ffmpeg_test
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         FFmpegJni().apply {
             val input = File(path)
             if (!input.exists()) throw RuntimeException(input.absolutePath + " 文件不存在")
-            initConfig(path)
+            Log.d(TAG, "invokeJni: ${initConfig(path)}")
         }
     }
 
