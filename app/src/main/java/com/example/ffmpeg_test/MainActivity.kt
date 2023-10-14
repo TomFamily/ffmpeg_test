@@ -27,20 +27,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invokeJni() {
-        if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
-        Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(path)}")
+        if (!File(video_mp4).exists()) throw RuntimeException(File(video_mp4).absolutePath + " 文件不存在")
+        Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(video_mp4)}")
 
         // fFmpegJni.playVideoWithFilter()
     }
 
     private fun initEvent() {
         binding.mainBtnTestPlay.setOnClickListener {
-            if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
+            if (!File(video_mp4).exists()) throw RuntimeException(File(video_mp4).absolutePath + " 文件不存在")
             thread?.interrupt()
             thread = Thread {
                 // 一定放在子现场操作，否则奔溃
-                Log.d(TAG, "invokeJni: " +
-                        "${fFmpegJni.playVideoWithFilter(path, binding.mainSvTest.holder.surface, FilterEffect.DRAW_RECTS.value)}")
+//                fFmpegJni.playVideoWithFilter(
+//                    video_mp4,
+//                    binding.mainSvTest.holder.surface,
+//                    FilterEffect.DRAW_RECTS.value
+//                )
+                fFmpegJni.mixVideoAndMusic(
+                    audio_mp3,
+                    video_flv,
+                    output_flv
+                ).apply {
+                    Log.d(TAG, "initEvent mixVideoAndMusic: $this")
+                }
             }
             thread?.start()
         }
@@ -54,6 +64,10 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity11"
         @SuppressLint("SdCardPath")
-        private val path = "/storage/emulated/0/input.mp4"
+        private val video_mp4 = "/storage/emulated/0/input.mp4"
+        private val video_flv = "/storage/emulated/0/yy_video.flv"
+        private val audio_mp3 = "/storage/emulated/0/yy_audio.mp3"
+        private val output_flv = "/storage/emulated/0/output_flv.flv"
+
     }
 }
