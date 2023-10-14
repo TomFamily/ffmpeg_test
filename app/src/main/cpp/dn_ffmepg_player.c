@@ -39,8 +39,10 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_initConfig(JNIEnv *env, jobject thiz
     (*env) -> ReleaseStringUTFChars(env,input, j_path);
 
     if (avformat_find_stream_info(avFormatContext, NULL) < 0) {
+        avformat_close_input(&avFormatContext);
         return (*env)->NewStringUTF(env, "获取视频信息失败！");
     }
+    logd("视频封装格式：%s", avFormatContext->iformat->name)
 
     int target_video_index = -1;
     for (int i = 0; i < avFormatContext->nb_streams; ++i) {
@@ -79,6 +81,7 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideo(JNIEnv *env, jobject thiz,
     (*env)->ReleaseStringUTFChars(env, path, j_path);
 
     if (avformat_find_stream_info(avFormatContext, NULL) < 0) {
+        avformat_close_input(&avFormatContext);
         return (*env)->NewStringUTF(env, "无法获取到视频流信息！");
     }
 
@@ -95,6 +98,7 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideo(JNIEnv *env, jobject thiz,
 
     AVCodecContext *avCodecContext = avFormatContext->streams[target_codec_index]->codec;
     AVCodec *avCodec = avcodec_find_decoder(avCodecContext->codec_id);
+    logd("视频编码格式：%s", avCodec ? avCodec->name : "未知！")
     if (avCodec == NULL) {
         return (*env)->NewStringUTF(env, "未知道解码器！");
     }
