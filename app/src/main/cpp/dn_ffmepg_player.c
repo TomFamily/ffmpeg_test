@@ -114,7 +114,7 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideo(JNIEnv *env, jobject thiz,
                                      avCodecContext->height, WINDOW_FORMAT_RGBA_8888);
 
     // 每次解码 AVPacket->AvFrame 的长度
-    int len = 0;
+    int len;
     // 是否正在解码的标致
     int decoding = 0;
     // 帧的数量
