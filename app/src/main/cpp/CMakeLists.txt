@@ -2,17 +2,25 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("ffmpeg_test")
 
+file(GLOB native_c "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
+
 add_library(
         ffmpeg_test
         SHARED
-        dn_ffmepg_player.c)
+        ${native_c})
+
+#file(GLOB native_cpp "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+#add_library(
+#        ffmpeg_test_cpp
+#        SHARED
+#        ${native_cpp})
 
 find_library(
         log-lib
         log)
 
 find_library(
-        log-android
+        android
         android
 )
 
@@ -83,4 +91,4 @@ target_link_libraries(
         swscale
         libyuv
         ${log-lib}
-        ${log-android})
+        ${android})

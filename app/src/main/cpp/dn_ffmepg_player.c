@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "android/log.h"
+#include "loger.h"
 #include "android/native_window.h"
 #include "android/native_window_jni.h"
 #include <strings.h>
@@ -11,14 +11,8 @@
 #include "libavformat/avformat.h"
 // 像素处理
 #include "libswscale/swscale.h"
-
 // 像素格式转换
 #include "libyuv.h"
-
-#define LOG_TAG "ffmpeg_tag"
-#define logd(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,FORMAT,##__VA_ARGS__);
-#define loge(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,FORMAT,##__VA_ARGS__);
-
 
 /**
 * Class:     com_young_ffmpeg_player1_YoungPlayer
@@ -135,7 +129,7 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideo(JNIEnv *env, jobject thiz,
 
             //非零，正在解码
             if (decoding) {
-                logd("解码%d帧", frame_count++)
+                frame_count++;
                 // lock
                 ANativeWindow_lock(aNativeWindow, &outBuffer, NULL);
                 // 设置rgb_frame的属性（像素格式、宽高）和缓冲区
@@ -161,6 +155,7 @@ Java_com_example_ffmpeg_1test_jni_FFmpegJni_playVideo(JNIEnv *env, jobject thiz,
             av_free_packet(avPacket);
         }
     }
+    logd("解码%d帧", frame_count)
 
     // 释放窗口
     ANativeWindow_release(aNativeWindow);

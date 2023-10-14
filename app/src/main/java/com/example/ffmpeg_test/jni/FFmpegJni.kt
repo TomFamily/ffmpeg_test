@@ -22,4 +22,9 @@ class FFmpegJni {
 
     external fun initConfig(input: String): String
     external fun playVideo(path: String, surface: Surface): String
+
+    /**
+     * 给视频添加黑白滤镜
+     */
+    external fun playVideoWithFilter(path: String, surface: Surface)
 }

@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initPermission()
-        initView()
+        initEvent()
         invokeJni()
     }
     private fun initPermission() {
@@ -28,15 +28,17 @@ class MainActivity : AppCompatActivity() {
     private fun invokeJni() {
         if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
         Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(path)}")
+
+        // fFmpegJni.playVideoWithFilter()
     }
 
-    private fun initView() {
+    private fun initEvent() {
         binding.mainBtnTestPlay.setOnClickListener {
             if (!File(path).exists()) throw RuntimeException(File(path).absolutePath + " 文件不存在")
             thread?.interrupt()
             thread = Thread {
                 // 一定放在子现场操作，否则奔溃
-                Log.d(TAG, "invokeJni: ${fFmpegJni.playVideo(path, binding.mainSvTest.holder.surface)}")
+                Log.d(TAG, "invokeJni: ${fFmpegJni.playVideoWithFilter(path, binding.mainSvTest.holder.surface)}")
             }
             thread?.start()
         }
