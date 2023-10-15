@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android_media_lib.MP4Player
+import com.example.aop_aspect.DebugLog
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
 import com.example.ffmpeg_test.uitls.PermissionUtil
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         MP4Player.test()
     }
 
+    @DebugLog
     private fun initPermission() {
         PermissionUtil.requestSDCardPermission(this@MainActivity, 1002) { }
     }

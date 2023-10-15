@@ -1,5 +1,9 @@
 pluginManagement {
     repositories {
+        // 添加阿里云 maven 地址
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -8,6 +12,10 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        // 添加阿里云 maven 地址
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         google()
         mavenCentral()
     }
@@ -15,3 +23,4 @@ dependencyResolutionManagement {
 rootProject.name = "ffmpeg_test"
 include ':app'
 include ':android_media_lib'
+include ':aop_aspect'
