@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android_media_lib.MP4Player
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
-import com.example.ffmpeg_test.jni.FilterEffect
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import java.io.File
 
@@ -21,7 +21,13 @@ class MainActivity : AppCompatActivity() {
         initPermission()
         initEvent()
         invokeJni()
+        initTest()
     }
+
+    private fun initTest() {
+        MP4Player.test()
+    }
+
     private fun initPermission() {
         PermissionUtil.requestSDCardPermission(this@MainActivity, 1002) { }
     }
