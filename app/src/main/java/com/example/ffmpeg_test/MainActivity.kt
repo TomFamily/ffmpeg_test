@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         private val video_mp4 = "/storage/emulated/0/input.mp4"
         private val video_flv = "/storage/emulated/0/yy_video.flv"
         private val audio_mp3 = "/storage/emulated/0/yy_audio.mp3"
-        private val output_flv = "/storage/emulated/0/output_flv.flv"
+        private val output_flv = "/storage/emulated/0/ffmpeg_out/output_flv.flv"
 
     }
 }
