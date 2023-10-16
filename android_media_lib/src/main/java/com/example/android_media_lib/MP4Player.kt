@@ -4,27 +4,45 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
-import android.view.Surface
+import android.view.SurfaceHolder
 
-class MP4Player(surface: Surface):
-    MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+class MP4Player: MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private val mediaPlayer by lazy { MediaPlayer() }
+
+    val callback = object : SurfaceHolder.Callback {
+        override fun surfaceCreated(holder: SurfaceHolder) {
+            mediaPlayer.setSurface(holder.surface)
+            /**
+             * 2、initialized -> prepared
+             */
+            mediaPlayer.prepareAsync()
+        }
+
+        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+
+        override fun surfaceDestroyed(holder: SurfaceHolder) {}
+    }
 
     init {
         mediaPlayer.setOnPreparedListener(this)
         mediaPlayer.setOnCompletionListener(this)
-        mediaPlayer.setSurface(surface)
     }
 
-    fun start(path: String) {
+    fun start(surfaceHolder: SurfaceHolder, path: String) {
+        /**
+         * 1、Idle -> initialized
+         */
         mediaPlayer.setDataSource(path)
-        mediaPlayer.prepareAsync()
+        surfaceHolder.addCallback(callback)
     }
 
-    fun start(context: Context, res: Int) {
+    fun start(context: Context, surfaceHolder: SurfaceHolder, res: Int) {
+        /**
+         * 1、Idle -> initialized
+         */
         mediaPlayer.setDataSource(context, Uri.parse("android.resource://" + context.packageName + "/" + res))
-        mediaPlayer.prepareAsync()
+        surfaceHolder.addCallback(callback)
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
