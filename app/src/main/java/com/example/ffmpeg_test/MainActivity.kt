@@ -3,6 +3,7 @@ package com.example.ffmpeg_test
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.SurfaceHolder
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android_media_lib.MP4Player
 import com.example.aop_aspect.DebugLog
@@ -10,6 +11,7 @@ import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -22,11 +24,28 @@ class MainActivity : AppCompatActivity() {
         initPermission()
         initEvent()
         invokeJni()
-        initTest()
+        testMediaPlayer()
     }
 
-    private fun initTest() {
-        MP4Player.test()
+    @SuppressLint("DiscouragedApi")
+    private fun testMediaPlayer() {
+        binding.mainSvTest.holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                 MP4Player(binding.mainSvTest.holder.surface).start(path = video_mp4)
+            }
+
+            override fun surfaceChanged(
+                holder: SurfaceHolder,
+                format: Int,
+                width: Int,
+                height: Int
+            ) {
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+            }
+
+        })
     }
 
     @DebugLog
