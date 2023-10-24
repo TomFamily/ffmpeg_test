@@ -63,6 +63,7 @@ dependencies {
 
     implementation project(":android_media_lib")
     implementation project(":aop_aspect")
+    implementation project(":io_model")
 }
 
 apply from: "../aspectj.gradle"

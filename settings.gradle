@@ -28,3 +28,4 @@ rootProject.name = "ffmpeg_test"
 include ':app'
 include ':android_media_lib'
 include ':aop_aspect'
+include ':io_model'

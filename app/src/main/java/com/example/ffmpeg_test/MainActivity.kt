@@ -8,9 +8,9 @@ import com.example.android_media_lib.MP4Player
 import com.example.aop_aspect.DebugLog
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
+import com.example.ffmpeg_test.uitls.FunctionTestInterface
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import java.io.File
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         initEvent()
         invokeJni()
         testMediaPlayer()
+        FunctionTestInterface.testIOModel()
     }
 
     @SuppressLint("DiscouragedApi")
