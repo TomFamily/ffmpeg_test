@@ -10,9 +10,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Base" />
             <option value="$PROJECT_DIR$/android_media_lib" />
             <option value="$PROJECT_DIR$/aop_aspect" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/io_model" />
           </set>
         </option>
       </GradleProjectSettings>
