@@ -1,4 +1,4 @@
-package com.example.io_model.b_io
+package com.example.io_model.bio
 
 import android.util.Log
 import java.net.ServerSocket

@@ -1,4 +1,4 @@
-package com.example.io_model.b_io
+package com.example.io_model.bio
 
 import android.util.Log
 import com.example.base.MyApplication
@@ -9,6 +9,7 @@ fun fileIO(fileName: String = "test.txt") {
     val file = File(MyApplication.getContext().filesDir, fileName)
     Log.d(TAG, "fileIO: ${file.path}")
 
+    // 如果文件不存在，会创建文件
     val writer = BufferedWriter(FileWriter(file))
     val reader = BufferedReader(FileReader(file))
     try {
