@@ -90,7 +90,7 @@ object NioFileOperate {
                         val byteArray = ByteArray(buffer.remaining())
                         buffer.get(byteArray) // 从 ByteBuffer 中读取数据到字节数组
                         val text = String(byteArray, Charset.forName("UTF-8")) // 转换为字符串
-                        Log.d(TAG, "fileOperate: $text ${Thread.currentThread()}") // 打印字符串
+                        Log.d(TAG, "fileOperate readObservable: $text ${Thread.currentThread()}") // 打印字符串
                         buffer.clear()
                     }
                 }
