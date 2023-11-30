@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         invokeJni()
         testMediaPlayer()
         FunctionTestInterface.testIOModel()
+        test()
+    }
+
+    private fun test() {
+        testRouter()
     }
 
     @SuppressLint("DiscouragedApi")
