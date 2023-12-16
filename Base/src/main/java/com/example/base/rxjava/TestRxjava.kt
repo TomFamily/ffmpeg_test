@@ -312,3 +312,15 @@ fun testAmbArray() {
             Log.d(TAG, "testAmbArray: $result")
         }.dispose()
 }
+
+fun testIntervalRange() {
+    /**
+     * @param initialDelay 发送第一个值的延迟
+     * @param period 发送两个值之间的时间间隔
+     */
+    Observable.intervalRange(0, 10, 300, 2000, TimeUnit.MILLISECONDS)
+        .cast(Int::class.java)
+        .subscribe {
+            Log.d(TAG, "testIntervalRange: $it")
+        }.dispose()
+}
