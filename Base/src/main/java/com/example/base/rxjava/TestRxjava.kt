@@ -324,3 +324,21 @@ fun testIntervalRange() {
             Log.d(TAG, "testIntervalRange: $it")
         }.dispose()
 }
+
+fun testScheduler() {
+    /**
+     * [Schedulers] 可以返回一个用于在 I/O 操作上执行任务的调度器。任务可以放在 Schedulers.io() 所代表的线程池中执行
+     * RxJava 中的调度器 [Schedulers] 并不是直接映射到单个线程，而是通过线程池来管理任务的执行。通过 Schedulers.io() 执行
+     * 的任务，会被 Schedulers.io() 线程池中的某个线程执行，但具体在哪个线程执行，取决于调度器和线程池的实现
+     */
+    Log.d(TAG, "testScheduler: ${Thread.currentThread()}")
+    Schedulers.io().scheduleDirect(
+        { Log.d(TAG, "testScheduler Schedulers: ${Thread.currentThread()}") },
+        1,
+        TimeUnit.SECONDS
+    )
+
+    /**
+     * 需要执行计算密集型的操作，可以考虑使用 [Schedulers.computation()]
+     */
+}
