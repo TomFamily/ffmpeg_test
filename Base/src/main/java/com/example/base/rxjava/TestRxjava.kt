@@ -2,10 +2,7 @@ package com.example.base.rxjava
 
 import android.util.Log
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableTransformer
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -336,9 +333,37 @@ fun testScheduler() {
         { Log.d(TAG, "testScheduler Schedulers: ${Thread.currentThread()}") },
         1,
         TimeUnit.SECONDS
-    )
+    ).dispose()
 
     /**
      * 需要执行计算密集型的操作，可以考虑使用 [Schedulers.computation()]
      */
+}
+
+/**
+ * RxJava 中，timestamp 操作符用于将原始的数据项转换为包含时间戳信息的数据项。
+ */
+fun testTimestamp() {
+    Observable.intervalRange(0, 10, 300, 2000, TimeUnit.MILLISECONDS)
+        .timestamp()
+        .subscribe {
+            /**
+             * it.time() 每个数据发送时的时间戳
+             */
+            Log.d(TAG, "testIntervalRange: ${it.time()} ${it.value()}")
+        }.dispose()
+}
+
+/**
+ * timeInterval 操作符用于将原始的数据项转换为包含时间间隔信息的数据项。这可以帮助你了解两个连续事件之间经过的时间。
+ */
+fun testTimeInterval() {
+    Observable.intervalRange(0, 10, 300, 2000, TimeUnit.MILLISECONDS)
+        .timeInterval()
+        .subscribe {
+            /**
+             * it.time() 本数据发送时间距离上一个数据的时间间隔
+             */
+            Log.d(TAG, "testIntervalRange: ${it.time()} ${it.value()}")
+        }.dispose()
 }
