@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.android_media_lib.MP4Player
 import com.example.android_media_lib.MyAudioRecord
 import com.example.aop_aspect.DebugLog
+import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         val myAudioRecord = MyAudioRecord()
         binding.mainMediaInclude.mainAudioRecord.setOnClickListener {
-            myAudioRecord.startRecording(BASE_PATH_MEDIA,"recorded_audio.wav")
+            myAudioRecord.startRecording(BASE_PATH_MEDIA, AUDIO_FILE_NAME)
         }
 
         binding.mainMediaInclude.mainAudioRecordStop.setOnClickListener {
