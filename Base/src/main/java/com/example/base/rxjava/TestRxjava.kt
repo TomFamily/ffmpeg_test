@@ -1,10 +1,15 @@
 package com.example.base.rxjava
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+
 
 /**
  *Created by arno.yang
@@ -322,7 +327,7 @@ fun testIntervalRange() {
         }.dispose()
 }
 
-fun testScheduler() {
+fun testScheduler(context: Context) {
     /**
      * [Schedulers] 可以返回一个用于在 I/O 操作上执行任务的调度器。任务可以放在 Schedulers.io() 所代表的线程池中执行
      * RxJava 中的调度器 [Schedulers] 并不是直接映射到单个线程，而是通过线程池来管理任务的执行。通过 Schedulers.io() 执行
@@ -330,10 +335,19 @@ fun testScheduler() {
      */
     Log.d(TAG, "testScheduler: ${Thread.currentThread()}")
     Schedulers.io().scheduleDirect(
-        { Log.d(TAG, "testScheduler Schedulers: ${Thread.currentThread()}") },
+        {
+            Log.d(TAG, "testScheduler Schedulers1: ${Thread.currentThread()} ${Thread.currentThread() == Looper.getMainLooper().thread}")
+            Handler(Looper.getMainLooper()).post {
+                // Toast.makeText(context, "你好啊", Toast.LENGTH_SHORT).show()
+            }
+            AndroidSchedulers.mainThread().scheduleDirect {
+                Log.d(TAG, "testScheduler Schedulers2: ${Thread.currentThread()} ${Thread.currentThread() == Looper.getMainLooper().thread}")
+                Toast.makeText(context, "你好啊", Toast.LENGTH_SHORT).show()
+            }
+        },
         1,
         TimeUnit.SECONDS
-    ).dispose()
+    )
 
     /**
      * 需要执行计算密集型的操作，可以考虑使用 [Schedulers.computation()]

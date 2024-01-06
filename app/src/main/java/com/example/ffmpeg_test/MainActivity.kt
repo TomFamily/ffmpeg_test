@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android_media_lib.MP4Player
 import com.example.aop_aspect.DebugLog
+import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
 import com.example.ffmpeg_test.uitls.FunctionTestInterface
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         testMediaPlayer()
         FunctionTestInterface.testIOModel()
         test()
+        testScheduler(this)
     }
 
     private fun test() {
