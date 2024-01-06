@@ -1,5 +1,6 @@
 package com.example.android_media_lib
 
+// AudioTrack：https://www.cnblogs.com/renhui/p/7463287.html
 /**
  * 播放：
  * MediaPlayer 更加适合在后台长时间播放本地音乐文件或者在线的流式资源;
@@ -8,6 +9,9 @@ package com.example.android_media_lib
  *
  * AudioTrack 只能播放已经解码的PCM流，如果对比支持的文件格式的话则是AudioTrack只支持wav格式的音频文件，
  * 因为wav格式的音频文件大部分都是PCM流。AudioTrack不创建解码器，所以只能播放不需要解码的wav文件。
+ * 每一个音频流对应着一个AudioTrack类的一个实例，每个AudioTrack会在创建时注册到 AudioFlinger中，
+ * 由AudioFlinger把所有的AudioTrack进行混合（Mixer），然后输送到AudioHardware中进行播放，目前Android
+ * 同时最多可以创建32个音频流，也就是说，Mixer最多会同时处理32个AudioTrack的数据流。
  */
 
 /**
