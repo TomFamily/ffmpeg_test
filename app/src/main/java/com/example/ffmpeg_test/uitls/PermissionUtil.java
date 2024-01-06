@@ -8,8 +8,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-
+import androidx.annotation.IntRange;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class PermissionUtil {
 
@@ -52,6 +53,12 @@ public class PermissionUtil {
             }
         } else {
             success.run();
+        }
+    }
+
+    public static void requestPermission(Activity activity, String permission, @IntRange(from = 0) int code) {
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, code);
         }
     }
 }

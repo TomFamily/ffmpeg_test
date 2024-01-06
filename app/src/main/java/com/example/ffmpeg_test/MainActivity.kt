@@ -1,17 +1,21 @@
 package com.example.ffmpeg_test
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android_media_lib.MP4Player
+import com.example.android_media_lib.MyAudioRecord
 import com.example.aop_aspect.DebugLog
+import com.example.base.BASE_PATH_MEDIA
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
 import com.example.ffmpeg_test.uitls.FunctionTestInterface
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -37,11 +41,21 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("DiscouragedApi")
     private fun testMediaPlayer() {
         MP4Player().start(binding.mainSvTest.holder, path = output_flv)
+
+        val myAudioRecord = MyAudioRecord()
+        binding.mainMediaInclude.mainAudioRecord.setOnClickListener {
+            myAudioRecord.startRecording(BASE_PATH_MEDIA,"recorded_audio.wav")
+        }
+
+        binding.mainMediaInclude.mainAudioRecordStop.setOnClickListener {
+            myAudioRecord.stopRecording()
+        }
     }
 
     @DebugLog
     private fun initPermission() {
         PermissionUtil.requestSDCardPermission(this@MainActivity, 1002) { }
+        PermissionUtil.requestPermission(this, Manifest.permission.RECORD_AUDIO, 0)
     }
 
     private fun invokeJni() {
