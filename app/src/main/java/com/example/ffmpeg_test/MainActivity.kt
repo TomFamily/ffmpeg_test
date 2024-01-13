@@ -10,6 +10,7 @@ import com.example.android_media_lib.MyAudioRecord
 import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
+import com.example.base.async.ThreadHelper
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
@@ -32,12 +33,18 @@ class MainActivity : AppCompatActivity() {
         testMediaPlayer()
         FunctionTestInterface.testIOModel()
         test()
-        testScheduler(this)
     }
 
     private fun test() {
         testRouter()
-        testRxjava()
+        testRxjava(this)
+
+        val threadHelper = ThreadHelper()
+        binding.mainBtnTest.setOnClickListener {
+            threadHelper.startRunnable {
+                Log.d(TAG, "test: ${Thread.currentThread().name} ${Thread.currentThread().priority}")
+            }
+        }
     }
 
     @SuppressLint("DiscouragedApi")

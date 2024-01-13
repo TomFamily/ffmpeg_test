@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "TestRxjava"
 
 
-fun testRxjava() {
+fun testRxjava(context: Context) {
+    testScheduler(context)
     testDelaySubscription()
 }
 fun testWindow() {
@@ -332,7 +333,7 @@ fun testIntervalRange() {
         }.dispose()
 }
 
-fun testScheduler(context: Context) {
+private fun testScheduler(context: Context) {
     /**
      * [Schedulers] 可以返回一个用于在 I/O 操作上执行任务的调度器。任务可以放在 Schedulers.io() 所代表的线程池中执行
      * RxJava 中的调度器 [Schedulers] 并不是直接映射到单个线程，而是通过线程池来管理任务的执行。通过 Schedulers.io() 执行
