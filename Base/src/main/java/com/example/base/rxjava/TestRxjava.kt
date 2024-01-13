@@ -19,6 +19,10 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "TestRxjava"
 
+
+fun testRxjava() {
+    testDelaySubscription()
+}
 fun testWindow() {
     /**
      * 通过window创建一个一秒时长的窗口，取窗口中的3个数据（为了确保至少有三个数据），当满足条件数据，往下执行
@@ -201,6 +205,7 @@ fun testAndThen() {
      * 在本例中，将 completable1、completable2 组合，在 completable1 执行完后，completable2才会执行
      */
     val completable1 = Completable.fromRunnable { Log.d(TAG, "testAndThen: completable1") }
+        .delay(2, TimeUnit.SECONDS)
     val completable2 = Completable.fromRunnable { Log.d(TAG, "testAndThen: completable2") }
 
     completable1.andThen(completable2)
@@ -379,5 +384,22 @@ fun testTimeInterval() {
              * it.time() 本数据发送时间距离上一个数据的时间间隔
              */
             Log.d(TAG, "testIntervalRange: ${it.time()} ${it.value()}")
+        }.dispose()
+}
+
+/**
+ * "delaySubscription" 操作符的作用是延迟订阅（Subscription）源 Observable（可观察对象）。
+ *
+ * 使用场景： 有时候，你可能想要在一定条件下延迟订阅 Observable。这可以是在特定时间点，或者是在某些事件发生后。
+ * "delaySubscription" 就是为了解决这类需求而设计的。
+ */
+private fun testDelaySubscription() {
+    Log.d(TAG, "testDelaySubscription: ")
+    Observable.just(10)
+        .doOnNext { Log.d(TAG, "testDelaySubscription1") }
+        .delaySubscription(2, TimeUnit.SECONDS)
+        .doOnNext { Log.d(TAG, "testDelaySubscription2") }
+        .subscribe {
+            Log.d(TAG, "testDelaySubscription: 3")
         }.dispose()
 }

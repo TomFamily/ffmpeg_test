@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun test() {
         testRouter()
+        testRxjava()
     }
 
     @SuppressLint("DiscouragedApi")
