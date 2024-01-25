@@ -404,3 +404,12 @@ private fun testDelaySubscription() {
             Log.d(TAG, "testDelaySubscription: 3")
         }.dispose()
 }
+
+private fun testToObservable() {
+    /**
+     * toObservable()：用于将其他类型的数据流或事件转换成 Observable 对象，如：Single
+     */
+    Single.just(50).toObservable().subscribe {
+        Log.d(TAG, "testToObservable: $it")
+    }.dispose()
+}
