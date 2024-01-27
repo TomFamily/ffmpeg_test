@@ -65,6 +65,7 @@ dependencies {
     implementation project(":aop_aspect")
     implementation project(":io_model")
     implementation project(":Base")
+    implementation project(":camera")
 }
 
 apply from: "../aspectj.gradle"

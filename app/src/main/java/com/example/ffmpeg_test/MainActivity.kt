@@ -11,6 +11,7 @@ import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
 import com.example.base.async.ThreadHelper
+import com.example.base.config.*
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("DiscouragedApi")
     private fun testMediaPlayer() {
-        MP4Player().start(binding.mainSvTest.holder, path = output_flv)
+        // MP4Player().start(binding.mainSvTest.holder, path = output_flv)
 
         val myAudioRecord = MyAudioRecord()
         binding.mainMediaInclude.mainAudioRecord.setOnClickListener {
@@ -99,16 +100,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
         thread?.interrupt()
     }
 
     companion object {
         private const val TAG = "MainActivity11"
-        @SuppressLint("SdCardPath")
-        private val video_mp4 = "/storage/emulated/0/input.mp4"
-        private val video_flv = "/storage/emulated/0/yy_video.flv"
-        private val audio_mp3 = "/storage/emulated/0/yy_audio.mp3"
-        private val output_flv = "/storage/emulated/0/ffmpeg_out/output_flv.flv"
-
     }
 }
