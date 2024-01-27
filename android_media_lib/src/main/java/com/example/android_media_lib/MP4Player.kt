@@ -21,7 +21,10 @@ class MP4Player: MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListene
 
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
-        override fun surfaceDestroyed(holder: SurfaceHolder) {}
+        override fun surfaceDestroyed(holder: SurfaceHolder) {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
     }
 
     init {
