@@ -2,11 +2,14 @@ package com.example.ffmpeg_test
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.android_media_lib.MP4Player
+import androidx.core.content.res.ResourcesCompat
 import com.example.android_media_lib.MyAudioRecord
+import com.example.android_media_lib.block.testBitmapDrawText
+import com.example.android_media_lib.block.testPaintFilter
 import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
@@ -46,6 +49,11 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "test: ${Thread.currentThread().name} ${Thread.currentThread().priority}")
             }
         }
+
+//        ResourcesCompat.getDrawable(resources, com.example.base.R.drawable.ic_ffmpeg, null)?.also {
+//            testPaintFilter(binding.mainViewRoundIamge2, it)
+//        }
+        testBitmapDrawText(binding.mainViewRoundIamge2, resources, com.example.base.R.drawable.ic_ffmpeg, Color.BLACK)
     }
 
     @SuppressLint("DiscouragedApi")
