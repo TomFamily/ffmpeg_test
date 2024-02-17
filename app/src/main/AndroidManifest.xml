@@ -36,7 +36,7 @@
 <!--        </activity>-->
 
         <activity
-            android:name="com.example.opengl.OpenGlActivity"
+            android:name="com.android.airhockey.OpenGlActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
