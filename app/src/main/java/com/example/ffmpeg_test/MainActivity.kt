@@ -77,10 +77,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invokeJni() {
-        if (!File(video_mp4).exists()) throw RuntimeException(File(video_mp4).absolutePath + " 文件不存在")
-        Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(video_mp4)}")
-
-        // fFmpegJni.playVideoWithFilter()
+        try {
+            if (!File(video_mp4).exists()) throw RuntimeException(File(video_mp4).absolutePath + " 文件不存在")
+            Log.d(TAG, "invokeJni: ${fFmpegJni.initConfig(video_mp4)}")
+            // fFmpegJni.playVideoWithFilter()
+        } catch (e: Exception) {
+            Log.e(TAG, "invokeJni: ${e.message}")
+        }
     }
 
     private fun initEvent() {

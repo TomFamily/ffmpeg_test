@@ -39,11 +39,15 @@ private class MediaPlayerBlob(val tv: TextureView, path: String, val identity: S
     private lateinit var textureView: TextureView
 
     init {
-        Log.d(TAG, "init")
-        onRecreate(tv)
-        mediaPlayer.setDataSource(path)
-        mediaPlayer.setOnPreparedListener {
-            mediaPlayer.start()
+        try {
+            Log.d(TAG, "init")
+            onRecreate(tv)
+            mediaPlayer.setDataSource(path)
+            mediaPlayer.setOnPreparedListener {
+                mediaPlayer.start()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "init: ${e.message}", e)
         }
     }
 
@@ -65,10 +69,14 @@ private class MediaPlayerBlob(val tv: TextureView, path: String, val identity: S
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        Log.d(TAG, "onSurfaceTextureAvailable: ")
-        surfaceTexture = surface
-        mediaPlayer.setSurface(Surface(surface))
-        mediaPlayer.prepareAsync()
+        try {
+            Log.d(TAG, "onSurfaceTextureAvailable: $mediaPlayer")
+            surfaceTexture = surface
+            mediaPlayer.setSurface(Surface(surface))
+            mediaPlayer.prepareAsync()
+        } catch (e: Exception) {
+            Log.e(TAG, "onSurfaceTextureAvailable: ${e.message}", )
+        }
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
