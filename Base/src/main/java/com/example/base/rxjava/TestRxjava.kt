@@ -23,6 +23,7 @@ private const val TAG = "TestRxjava"
 fun testRxjava(context: Context) {
     testScheduler(context)
     testDelaySubscription()
+    testAndThen()
 }
 fun testWindow() {
     /**
@@ -205,9 +206,15 @@ fun testAndThen() {
      * andThen 可以组合两个 Completable，在前一个 Completable 执行完成后，才会再执行第二个 Completable
      * 在本例中，将 completable1、completable2 组合，在 completable1 执行完后，completable2才会执行
      */
-    val completable1 = Completable.fromRunnable { Log.d(TAG, "testAndThen: completable1") }
-        .delay(2, TimeUnit.SECONDS)
-    val completable2 = Completable.fromRunnable { Log.d(TAG, "testAndThen: completable2") }
+    val completable1 = Completable.create {
+        Log.d(TAG, "testAndThen: completable1")
+        it.onComplete()
+    }
+
+    val completable2 = Completable.create {
+        Log.d(TAG, "testAndThen: completable2")
+        it.onComplete()
+    }
 
     completable1.andThen(completable2)
         .subscribe {
