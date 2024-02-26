@@ -24,6 +24,7 @@ fun testRxjava(context: Context) {
     testScheduler(context)
     testDelaySubscription()
     testAndThen()
+    testFlatMap()
 }
 fun testWindow() {
     /**
@@ -40,6 +41,7 @@ fun testWindow() {
     Observable.range(10,20)
         .observeOn(AndroidSchedulers.mainThread())
         .window(1, TimeUnit.SECONDS) // 划分一秒的时间窗口
+        .doOnNext {  }
         .flatMap { window: Observable<Int> -> window.take(3).toList().toObservable() } // 从每个窗口中取前五个事件
         .doOnNext { Log.d(TAG, "testKJ: ${it.size}") }
         .filter { it.size >= 3 }
@@ -69,36 +71,43 @@ fun testConcatWith() {
      * concatWith 操作符用于将当前Observable的发射物品与另一个Observable的发射物品连接起来，形成一个新的Observable。
      * 它会按照顺序先发射当前Observable的所有数据，然后再发射另一个Observable的数据。
      */
-    Single.just(0)
-        .cache()
-        .concatWith {  }
-        .subscribe {
-            Log.d(TAG, "testThread: $it")
-        }.dispose()
+
+    val observable1: Observable<Int> = Observable.just(1, 2, 3)
+    val observable2 = Observable.just(4, 5, 6)
+
+    Observable.concat(observable1, observable2).subscribe {
+        Log.d(TAG, "testConcatWith concat: $it")
+    }.dispose()
+
+    observable1.concatWith(observable2).subscribe {
+        Log.d(TAG, "testConcatWith concatWith: $it")
+    }.dispose()
 }
 
 /**
  * 1、subscribeOn 必须写在 observeOn 之前才会有效
- * 2、多个 subscribeOn， 只有第一个 subscribeOn 会生效
+ * 2、在 RxJava 中，调用 subscribeOn() 方法会影响该操作符之前的代码，
+ *    而调用 observeOn() 方法会影响该操作符之后的代码。
+ *    因此，你的代码中存在多次调用 subscribeOn() 和 observeOn() 方法，但只有最后一次调用会起作用。
  */
-fun testThread() {
+private fun testThread() {
     Observable.create {
         it.onNext(false)
     }
         .subscribeOn(Schedulers.io())
-        .doOnNext { Log.d(TAG, "testThread2: ${Thread.currentThread()}") }
-        .subscribeOn(Schedulers.newThread())
-        .doOnNext { Log.d(TAG, "testThread22: ${Thread.currentThread()}") }
-        .observeOn(AndroidSchedulers.mainThread())
         .doOnNext { Log.d(TAG, "testThread1: ${Thread.currentThread()}") }
-        .subscribeOn(Schedulers.io())
-        .doOnNext { Log.d(TAG, "testThread3: ${Thread.currentThread()}") }
+        .subscribeOn(Schedulers.newThread())
+        .doOnNext { Log.d(TAG, "testThread2: ${Thread.currentThread()}") }
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext { Log.d(TAG, "testThread3: ${Thread.currentThread()}") }
+        .subscribeOn(Schedulers.io())
         .doOnNext { Log.d(TAG, "testThread4: ${Thread.currentThread()}") }
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext { Log.d(TAG, "testThread5: ${Thread.currentThread()}") }
         .subscribe()
 }
 
-fun testEmpty() {
+private fun testEmpty() {
     /**
      * empty() ： 直接发送 onComplete() 事件
      * Observable.empty 不会发送值，所以：doOnNext、subscribe 操作符都是无法监听到数据的，
@@ -167,10 +176,8 @@ fun testCompose() {
      * filter true 可过
      */
     Observable.just(1, 2, 3, 4, 5)
-        .distinctUntilChanged { t1, t2 ->
-            true
-        }
-        .compose(customOperator)
+        .distinctUntilChanged { t1, t2 -> true }
+        .compose(customOperator!!)
         .subscribe {
 
         }.dispose()
