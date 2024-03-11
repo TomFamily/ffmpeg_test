@@ -6,10 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.example.android_media_lib.MyAudioRecord
 import com.example.android_media_lib.block.testBitmapDrawText
-import com.example.android_media_lib.block.testPaintFilter
 import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
@@ -18,8 +16,10 @@ import com.example.base.config.*
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
+import com.example.ffmpeg_test.test.testReflex
 import com.example.ffmpeg_test.uitls.FunctionTestInterface
 import com.example.ffmpeg_test.uitls.PermissionUtil
+import com.example.ffmpeg_test.uitls.testRouter
 import java.io.File
 
 
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private fun test() {
         testRouter()
         testRxjava(this)
+        testReflex()
 
         val threadHelper = ThreadHelper()
         binding.mainBtnTest.setOnClickListener {
