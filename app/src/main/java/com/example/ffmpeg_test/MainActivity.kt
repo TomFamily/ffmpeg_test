@@ -20,6 +20,7 @@ import com.example.ffmpeg_test.test.testReflex
 import com.example.ffmpeg_test.uitls.FunctionTestInterface
 import com.example.ffmpeg_test.uitls.PermissionUtil
 import com.example.ffmpeg_test.uitls.testRouter
+import com.example.pc.binder.testBinder
 import java.io.File
 
 
@@ -34,15 +35,16 @@ class MainActivity : AppCompatActivity() {
         initPermission()
         initEvent()
         invokeJni()
-        testMediaPlayer()
         FunctionTestInterface.testIOModel()
         test()
     }
 
     private fun test() {
+        testMediaPlayer()
         testRouter()
         testRxjava(this)
         testReflex()
+        testBinder(this)
 
         val threadHelper = ThreadHelper()
         binding.mainBtnTest.setOnClickListener {

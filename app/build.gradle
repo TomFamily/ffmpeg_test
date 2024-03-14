@@ -67,6 +67,7 @@ dependencies {
     implementation project(":Base")
     implementation project(":camera")
     implementation project(":opengl")
+    implementation project(":pc")
 }
 
 apply from: "../aspectj.gradle"

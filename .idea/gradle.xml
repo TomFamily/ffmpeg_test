@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/camera" />
             <option value="$PROJECT_DIR$/io_model" />
             <option value="$PROJECT_DIR$/opengl" />
+            <option value="$PROJECT_DIR$/pc" />
           </set>
         </option>
       </GradleProjectSettings>
