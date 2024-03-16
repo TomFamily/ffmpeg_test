@@ -44,6 +44,10 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
 
+        <service android:name="com.example.pc.service.TestService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
