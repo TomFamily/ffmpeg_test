@@ -362,7 +362,7 @@ private fun testScheduler(context: Context) {
             }
             AndroidSchedulers.mainThread().scheduleDirect {
                 Log.d(TAG, "testScheduler Schedulers2: ${Thread.currentThread()} ${Thread.currentThread() == Looper.getMainLooper().thread}")
-                Toast.makeText(context, "你好啊", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(context, "你好啊", Toast.LENGTH_SHORT).show()
             }
         },
         1,

@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/io_model" />
             <option value="$PROJECT_DIR$/opengl" />
             <option value="$PROJECT_DIR$/pc" />
+            <option value="$PROJECT_DIR$/pc_client" />
           </set>
         </option>
       </GradleProjectSettings>
