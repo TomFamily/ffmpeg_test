@@ -48,7 +48,7 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service android:name=".BookManagerService"
+        <service android:name="com.example.pc.service.BookManagerService"
             android:enabled="true"
             android:exported="true"/>
 

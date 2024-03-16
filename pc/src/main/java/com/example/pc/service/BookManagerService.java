@@ -1,4 +1,4 @@
-package com.example.ffmpeg_test;
+package com.example.pc.service;
 
 import android.app.Service;
 import android.content.Intent;

@@ -63,9 +63,11 @@ class MainActivity : AppCompatActivity() {
     private fun initEvent() {
         viewBinding.mainBtnBindService.setOnClickListener {
             val intent = Intent().apply {
-                setClassName("com.example.ffmpeg_test", "com.example.ffmpeg_test.BookManagerService")
+                setClassName("com.example.ffmpeg_test", "com.example.pc.service.BookManagerService")
             }
-            bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+            bindService(intent, serviceConnection, BIND_AUTO_CREATE).also {
+                Log.d(TAG, "bindService: $it ")
+            }
         }
 
         viewBinding.mainBtnUnbindService.setOnClickListener {
