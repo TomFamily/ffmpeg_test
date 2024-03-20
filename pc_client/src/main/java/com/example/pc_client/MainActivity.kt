@@ -12,6 +12,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.pc_client.databinding.ActivityMainBinding
 
 // AIDL简单Demo： https://juejin.cn/post/6844903661403914254
+/**
+ * 数据通讯方式：
+ * 客户端 -》 服务端： 1、客户端绑定服务端
+ *                  2、绑定成功后，服务端 回给 客户端的 ServiceConnection.onServiceConnected 一个 IBinder
+ *                  3、客户端从 IBinder 拿到 IManagerInterface 对象，调用 IManagerInterface 中的方法，实现 客户端 -》服务端 通讯
+ *
+ * 服务端 -》 客户端：1、给 IManagerInterface 预定一个 set接口（interface2）对象 的方法
+ *                 2、客户端实现 interface2 的方法，并通过 IManagerInterface set接口方法 将 interface2 的实现传递给服务端
+ *                 3、服务端 通过 set接口方法的实现 拿到 interface2 后，调用 interface2 中的方法，实现 服务端 -》 客户端 的通讯
+ */
 class MainActivity : AppCompatActivity() {
 
     private var managerInterface: IManagerInterface? = null

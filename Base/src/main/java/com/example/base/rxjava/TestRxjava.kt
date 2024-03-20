@@ -19,14 +19,19 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "TestRxjava"
 
+fun main() {
+    // testDefer()
+    testDefer2()
+}
 
 fun testRxjava(context: Context) {
     testScheduler(context)
     testDelaySubscription()
     testAndThen()
     testFlatMap()
+    testThread()
 }
-fun testWindow() {
+private fun testWindow() {
     /**
      * 通过window创建一个一秒时长的窗口，取窗口中的3个数据（为了确保至少有三个数据），当满足条件数据，往下执行
      *
@@ -85,25 +90,22 @@ fun testConcatWith() {
 }
 
 /**
- * 1、subscribeOn 必须写在 observeOn 之前才会有效
- * 2、在 RxJava 中，调用 subscribeOn() 方法会影响该操作符之前的代码，
- *    而调用 observeOn() 方法会影响该操作符之后的代码。
- *    因此，你的代码中存在多次调用 subscribeOn() 和 observeOn() 方法，但只有最后一次调用会起作用。
+ * 1、多个 subscribeOn，会以距离 Observable 最近的一个为准（只会有一个生效）
+ * 2、subscribeOn() 方法会影响 第一个 observeOn() 之前的流程
+ * 3、observeOn() 方法会影响该操作符之后的代码。
+ * 4、代码中存在多次调用 subscribeOn()，但只有第一个调用起作用；但 observeOn() 方法 每次调用都会生效
  */
 private fun testThread() {
-    Observable.create {
-        it.onNext(false)
-    }
-        .subscribeOn(Schedulers.io())
+    Observable.just(false)
+        // .subscribeOn(Schedulers.io())
         .doOnNext { Log.d(TAG, "testThread1: ${Thread.currentThread()}") }
-        .subscribeOn(Schedulers.newThread())
         .doOnNext { Log.d(TAG, "testThread2: ${Thread.currentThread()}") }
         .observeOn(AndroidSchedulers.mainThread())
         .doOnNext { Log.d(TAG, "testThread3: ${Thread.currentThread()}") }
-        .subscribeOn(Schedulers.io())
         .doOnNext { Log.d(TAG, "testThread4: ${Thread.currentThread()}") }
-        .observeOn(AndroidSchedulers.mainThread())
+        .observeOn(Schedulers.io())
         .doOnNext { Log.d(TAG, "testThread5: ${Thread.currentThread()}") }
+        .subscribeOn(Schedulers.newThread())
         .subscribe()
 }
 
@@ -206,6 +208,26 @@ fun testDefer() {
     observable.subscribe {
         Log.d("Example", "Subscriber 2 received: $it")
     }.dispose()
+}
+
+private fun testDefer2() {
+    println("testDefer2")
+    Observable.fromIterable(object : Iterable<Int> {
+        override fun iterator(): Iterator<Int> {
+            println("iterator1")
+            return getList("fromIterable").iterator()
+        }
+    })
+    Observable.fromIterable(getList("iterator2"))
+    Observable.defer {
+        Observable.fromIterable(getList("defer"))
+    }
+}
+
+private fun getList(string: String): List<Int> {
+    println(string)
+    listOf(1,3,4,5).stream()
+    return listOf(1,3,4,5)
 }
 
 fun testAndThen() {
