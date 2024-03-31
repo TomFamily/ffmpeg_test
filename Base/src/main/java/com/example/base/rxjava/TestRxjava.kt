@@ -4,10 +4,19 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
+import android.view.View
+import com.example.base.MyApplication
+import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding2.view.RxViewGroup
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.internal.operators.observable.ObservableDelay
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -30,7 +39,20 @@ fun testRxjava(context: Context) {
     testAndThen()
     testFlatMap()
     testThread()
+    testDebounce()
 }
+
+fun testDebounce() {
+    /**
+     * debounce 是 RxJava 中的一个操作符，用于过滤掉发射速率过快的数据项，只保留最后一个数据项。
+     * 具体来说，debounce 操作符会等待一段指定的时间，在 这段时间内 如果没有新的数据发射，
+     * 则会将最后一个数据项发射出去；如果在这段时间内有新的数据发射，则会重新开始计时。这样可以确保只有在数据
+     * 流停止发射一段时间后，才会将最后一个数据项发射出去，从而实现对数据流的控制和过滤。
+     */
+    Observable.just(1,2,3,4,6)
+        .debounce(100, TimeUnit.MILLISECONDS).subscribe().dispose()
+}
+
 private fun testWindow() {
     /**
      * 通过window创建一个一秒时长的窗口，取窗口中的3个数据（为了确保至少有三个数据），当满足条件数据，往下执行
@@ -96,17 +118,54 @@ fun testConcatWith() {
  * 4、代码中存在多次调用 subscribeOn()，但只有第一个调用起作用；但 observeOn() 方法 每次调用都会生效
  */
 private fun testThread() {
-    Observable.just(false)
-        // .subscribeOn(Schedulers.io())
+    val observable = Observable.just(false)
+//         .subscribeOn(Schedulers.io())
+        .subscribeOn(AndroidSchedulers.mainThread())
         .doOnNext { Log.d(TAG, "testThread1: ${Thread.currentThread()}") }
         .doOnNext { Log.d(TAG, "testThread2: ${Thread.currentThread()}") }
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext { Log.d(TAG, "testThread3: ${Thread.currentThread()}") }
+        .buffer(5)
+        .doOnNext { it -> Log.d(TAG, "testThread3: ${Thread.currentThread()}") }
         .doOnNext { Log.d(TAG, "testThread4: ${Thread.currentThread()}") }
-        .observeOn(Schedulers.io())
+        // .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
         .doOnNext { Log.d(TAG, "testThread5: ${Thread.currentThread()}") }
         .subscribeOn(Schedulers.newThread())
         .subscribe()
+
+    BehaviorSubject.createDefault(3).toSerialized()
+
+    val observable2 = Observable.create(object : ObservableOnSubscribe<String> {
+        override fun subscribe(emitter: ObservableEmitter<String>) {
+            emitter.onNext("ri")
+        }
+    })
+
+    RxView.clicks(View(MyApplication.getContext()))
+
+    val observer2: Observer<String> = object : Observer<String> {
+        private lateinit var dis: Disposable
+        override fun onSubscribe(d: Disposable) {
+            dis = d
+        }
+
+        override fun onError(e: Throwable) {
+        }
+
+        override fun onComplete() {
+        }
+
+        override fun onNext(t: String) {
+            if (t == "dis") {
+                dis.dispose()
+            }
+        }
+    }
+    observable2
+        .subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.computation())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer2)
 }
 
 private fun testEmpty() {
@@ -170,8 +229,13 @@ fun testCompose() {
             upstream
                 .filter { number: Int -> number % 2 == 0 } // 过滤偶数
                 .map { number: Int -> "Even: $number" } // 转换为字符串
+                .flatMap { Observable.just("123") }
                 .observeOn(AndroidSchedulers.mainThread())
         }
+
+    Observable.just(3).blockingFirst()
+
+    val subject = BehaviorSubject.createDefault(3)
 
     /**
      * distinctUntilChanged false 可过
@@ -212,15 +276,15 @@ fun testDefer() {
 
 private fun testDefer2() {
     println("testDefer2")
-    Observable.fromIterable(object : Iterable<Int> {
+    val c = Observable.fromIterable(object : Iterable<Int> {
         override fun iterator(): Iterator<Int> {
             println("iterator1")
-            return getList("fromIterable").iterator()
+            return getList("fromIterable iterator").iterator()
         }
     })
-    Observable.fromIterable(getList("iterator2"))
-    Observable.defer {
-        Observable.fromIterable(getList("defer"))
+    val a = Observable.fromIterable(getList("fromIterable"))
+    val b = Observable.defer {
+        Observable.fromIterable(getList("fromIterable defer"))
     }
 }
 
