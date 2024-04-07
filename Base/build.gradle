@@ -47,4 +47,7 @@ dependencies {
     //RxAndroid的依赖包
     api 'io.reactivex.rxjava3:rxjava:3.0.3'
     api 'com.jakewharton.rxbinding2:rxbinding:2.2.0'
+
+    api "androidx.lifecycle:lifecycle-viewmodel:2.6.1"
+
 }

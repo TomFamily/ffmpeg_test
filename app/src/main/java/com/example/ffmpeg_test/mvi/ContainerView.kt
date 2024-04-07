@@ -7,13 +7,14 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.ffmpeg_test.databinding.ViewContainerBinding
 import com.example.ffmpeg_test.mvi.base.UserIntent
+import com.example.base.exit.activityViewModels
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 
 class ContainerView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
     private val binding: ViewContainerBinding
-    private val viewModel by lazy { ContainerViewModel() }
+    private val viewModel: ContainerViewModel
     private var mDisposable: Disposable? = null
     private var mDisposableMap: io.reactivex.disposables.Disposable? = null
     private var mDisposableAss: io.reactivex.disposables.Disposable? = null
@@ -21,6 +22,7 @@ class ContainerView(context: Context, attributeSet: AttributeSet): ConstraintLay
 
     init {
         binding = ViewContainerBinding.inflate(LayoutInflater.from(context), this, true)
+        viewModel = activityViewModels<ContainerViewModel>().value
     }
 
     override fun onAttachedToWindow() {
