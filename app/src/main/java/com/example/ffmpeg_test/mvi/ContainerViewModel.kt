@@ -2,7 +2,6 @@ package com.example.ffmpeg_test.mvi
 
 import android.util.Log
 import com.example.ffmpeg_test.mvi.base.BaseViewModel
-import com.example.ffmpeg_test.mvi.base.Size
 import com.example.ffmpeg_test.mvi.base.UserIntent
 import com.example.ffmpeg_test.mvi.base.UserState
 import io.reactivex.rxjava3.core.Observable
@@ -10,7 +9,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class ContainerViewModel: BaseViewModel<BehaviorSubject<UserState>, UserIntent , Observable<UserState>, UserState>() {
 
-    override val state: BehaviorSubject<UserState> = BehaviorSubject.createDefault(UserState())
+    override val state: BehaviorSubject<UserState> = BehaviorSubject.createDefault(UserState.AllSmall)
 
     override fun getStateObservable(): Observable<UserState> {
         return state.hide()
@@ -23,29 +22,15 @@ class ContainerViewModel: BaseViewModel<BehaviorSubject<UserState>, UserIntent ,
     override fun dispatchIntent(intent: UserIntent) {
         Log.d(TAG, "dispatchIntent: ${intent.name}")
 
-        intent.checkToBig(state.value!!).also {
-            state.onNext(it)
-        }
-
         val localState = when(intent) {
-            UserIntent.BigMap -> {
-                intent.checkToBig(state.value!!)
-            }
-            UserIntent.SmallMap -> {
-                state.value!!.copy(mapState = Size.SMALL)
-            }
-            UserIntent.BigAssistant -> {
-                intent.checkToBig(state.value!!)
-            }
-            UserIntent.SmallAssistant -> {
-                state.value!!.copy(assistantState = Size.SMALL)
-            }
-            UserIntent.BigAttitude -> {
-                intent.checkToBig(state.value!!)
-            }
-            UserIntent.SmallAttitude -> {
-                state.value!!.copy(attitudeSTate = Size.SMALL)
-            }
+            UserIntent.BigMap -> UserState.BigMap
+            UserIntent.MidMap -> UserState.MidMap
+            UserIntent.SmallMap -> UserState.AllSmall
+            UserIntent.BigAssistant -> UserState.BigAssistant
+            UserIntent.MidAssistant -> UserState.MidAssistant
+            UserIntent.BigAttitude -> UserState.BigAttitude
+            UserIntent.MidAttitude -> UserState.MidAttitude
+            UserIntent.SmallMap, UserIntent.SmallAssistant, UserIntent.SmallAttitude -> UserState.AllSmall
         }
         state.onNext(localState)
     }
