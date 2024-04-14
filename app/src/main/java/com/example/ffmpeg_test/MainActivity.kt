@@ -12,7 +12,6 @@ import com.example.android_media_lib.block.testBitmapDrawText
 import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
-import com.example.base.async.ThreadHelper
 import com.example.base.config.*
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
@@ -48,16 +47,6 @@ class MainActivity : AppCompatActivity() {
         testBinder(this)
         TestOpenGl.test()
 
-        val threadHelper = ThreadHelper()
-        binding.mainBtnTest.setOnClickListener {
-            threadHelper.startRunnable {
-                Log.d(TAG, "test: ${Thread.currentThread().name} ${Thread.currentThread().priority}")
-            }
-        }
-
-//        ResourcesCompat.getDrawable(resources, com.example.base.R.drawable.ic_ffmpeg, null)?.also {
-//            testPaintFilter(binding.mainViewRoundIamge2, it)
-//        }
         testBitmapDrawText(binding.mainViewRoundIamge2, resources, com.example.base.R.drawable.ic_ffmpeg, Color.BLACK)
     }
 
