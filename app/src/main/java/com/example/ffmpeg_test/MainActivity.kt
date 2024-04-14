@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.android.TestOpenGl
 import com.example.android_media_lib.MyAudioRecord
 import com.example.android_media_lib.block.testBitmapDrawText
 import com.example.aop_aspect.DebugLog
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         testRxjava(this)
         testReflex()
         testBinder(this)
+        TestOpenGl.test()
 
         val threadHelper = ThreadHelper()
         binding.mainBtnTest.setOnClickListener {
