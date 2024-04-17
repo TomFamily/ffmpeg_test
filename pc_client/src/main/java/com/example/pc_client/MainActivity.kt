@@ -27,6 +27,14 @@ class MainActivity : AppCompatActivity() {
     private var managerInterface: IManagerInterface? = null
     private lateinit var viewBinding: ActivityMainBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewBinding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(viewBinding.root)
+
+        initEvent()
+    }
+
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.d(TAG, "[Client] onServiceConnected success :" + Thread.currentThread().name)
@@ -60,14 +68,6 @@ class MainActivity : AppCompatActivity() {
         ) {
             Log.d(TAG, "basicTypes: $anInt")
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewBinding = ActivityMainBinding.inflate(LayoutInflater.from(this))
-        setContentView(viewBinding.root)
-
-        initEvent()
     }
 
     private fun initEvent() {
