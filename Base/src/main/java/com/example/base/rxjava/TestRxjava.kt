@@ -7,16 +7,11 @@ import android.util.Log
 import android.view.View
 import com.example.base.MyApplication
 import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.view.RxViewGroup
-import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.internal.operators.observable.ObservableDelay
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -42,7 +37,54 @@ fun testRxjava(context: Context) {
     testDebounce()
 }
 
-fun testDebounce() {
+/**
+ * scan 可以拿到前一个发送的值
+ * 用途：将前一个值与当前值 进行 结合处理
+ */
+private fun testScan() {
+    Observable.just(1,2,3,4,6)
+        .scan { t1, t2 ->
+            t2 + t1
+        }.subscribe {
+            Log.d(TAG, "testScan: $it")
+        }.dispose()
+}
+
+/**
+ * reduce 操作符也是 RxJava 中的一种转换操作符，它可以将 Observable 发射的数据项按照指定的规则进行聚合操作，
+ * 最终只发射一个数据项给观察者，即聚合的最终结果。
+ */
+private fun testReduce() {
+    Observable.just(1,2,3,4,6)
+        .reduce { t1, t2 ->
+            t1 + t2
+        }.subscribe {
+            Log.d(TAG, "testReduce: $it")
+        }.dispose()
+}
+
+/**
+ * count 操作符是 RxJava 中的一个转换操作符，它用于统计 Observable 发射的数据项的数量，
+ * 并将统计结果作为一个单独的数据项发送给观察者。
+ */
+
+/**
+ * sequenceEqual 操作符是 RxJava 中的一个条件和布尔型操作符，用于判断两个 Observable
+ * 是否发射相同的数据序列，以及这些数据是否按相同的顺序发射。它会比较两个 Observable 发射的每一个数据项，
+ * 如果两个 Observable 的数据序列完全相同，则 sequenceEqual 操作符会发射一个布尔值 true，否则会发射一个布尔值 false。
+ */
+
+private fun testSequenceEqual() {
+    val observable1 = Observable.just(1, 2, 3, 4, 5)
+    val observable2 = Observable.just(1, 2, 3, 4, 5)
+
+    Observable.sequenceEqual(observable1, observable2)
+        .subscribe { equal -> println("Are sequences equal? $equal") }.dispose()
+// 输出：
+// Are sequences equal? true
+}
+
+private fun testDebounce() {
     /**
      * debounce 是 RxJava 中的一个操作符，用于过滤掉发射速率过快的数据项，只保留最后一个数据项。
      * 具体来说，debounce 操作符会等待一段指定的时间，在 这段时间内 如果没有新的数据发射，
