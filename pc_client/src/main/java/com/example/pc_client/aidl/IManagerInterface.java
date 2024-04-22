@@ -1,7 +1,7 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
  */
-package com.example.pc_client;
+package com.example.pc_client.aidl;
 
 /**
  * 作用：客户端 -数据-》服务端
@@ -32,14 +32,14 @@ public interface IManagerInterface extends android.os.IInterface
   /** Local-side IPC implementation stub class. */
   public static abstract class Stub extends android.os.Binder implements IManagerInterface
   {
-    private static final String DESCRIPTOR = "com.example.pc_client.IManagerInterface";
+    private static final String DESCRIPTOR = "com.example.pc_client.aidl.IManagerInterface";
     /** Construct the stub at attach it to the interface. */
     public Stub()
     {
       this.attachInterface(this, DESCRIPTOR);
     }
     /**
-     * Cast an IBinder object into an com.example.pc_client.IManagerInterface interface,
+     * Cast an IBinder object into an com.example.pc_client.aidl.IManagerInterface interface,
      * generating a proxy if needed.
      */
     public static IManagerInterface asInterface(android.os.IBinder obj)

@@ -9,7 +9,10 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.example.pc_client.aidl.ICallbacklInterface
+import com.example.pc_client.aidl.IManagerInterface
 import com.example.pc_client.databinding.ActivityMainBinding
+import com.example.pc_client.hilt.HiltActivity
 
 // AIDL简单Demo： https://juejin.cn/post/6844903661403914254
 /**
@@ -26,15 +29,20 @@ class MainActivity : AppCompatActivity() {
 
     private var managerInterface: IManagerInterface? = null
     private lateinit var viewBinding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(viewBinding.root)
 
         initEvent()
+        testHilt()
     }
 
+    private fun testHilt() {
+        startActivity(Intent(this, HiltActivity::class.java))
+    }
+
+    //<editor-fold desc="AIDL 客户端">
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.d(TAG, "[Client] onServiceConnected success :" + Thread.currentThread().name)
@@ -96,6 +104,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    //</editor-fold>
 
     companion object {
         private const val TAG = "MainActivity2"

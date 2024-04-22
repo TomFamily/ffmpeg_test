@@ -1,7 +1,7 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
  */
-package com.example.pc_client;
+package com.example.pc_client.aidl;
 // Declare any non-default types here with import statements
 
 /**
@@ -27,14 +27,14 @@ public interface ICallbacklInterface extends android.os.IInterface
   /** Local-side IPC implementation stub class. */
   public static abstract class Stub extends android.os.Binder implements ICallbacklInterface
   {
-    private static final String DESCRIPTOR = "com.example.pc_client.ICallbacklInterface";
+    private static final String DESCRIPTOR = "com.example.pc_client.aidl.ICallbacklInterface";
     /** Construct the stub at attach it to the interface. */
     public Stub()
     {
       this.attachInterface(this, DESCRIPTOR);
     }
     /**
-     * Cast an IBinder object into an com.example.pc_client.ICallbacklInterface interface,
+     * Cast an IBinder object into an com.example.pc_client.aidl.ICallbacklInterface interface,
      * generating a proxy if needed.
      */
     public static ICallbacklInterface asInterface(android.os.IBinder obj)
