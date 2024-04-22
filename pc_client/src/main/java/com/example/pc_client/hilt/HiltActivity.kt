@@ -7,6 +7,8 @@ import com.example.pc_client.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+// https://juejin.cn/post/7003552331962777637#heading-8
+// https://developer.android.google.cn/training/dependency-injection/hilt-android?hl=zh-cn
 @AndroidEntryPoint
 class HiltActivity : AppCompatActivity() {
 
