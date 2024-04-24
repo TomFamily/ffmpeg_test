@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testHilt() {
-        startActivity(Intent(this, HiltActivity::class.java))
+        // startActivity(Intent(this, HiltActivity::class.java))
     }
 
     //<editor-fold desc="AIDL 客户端">

@@ -4,24 +4,25 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.base.config.output_flv
-import kotlinx.android.synthetic.main.layout_camera_view.view.*
 
 /**
  * surface keep 机制
  */
 class CameraView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet){
-
+    private val myTextureView: TextureView
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_camera_view, this, true)
+        myTextureView = findViewById(R.id.surface_strong_tv_1)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         Log.d(TAG, "onAttachedToWindow: ")
-        CameraStrong.createBlob(surface_strong_tv_1, output_flv, surface_strong_tv_1.id.toString())
+        CameraStrong.createBlob(myTextureView, output_flv, myTextureView.id.toString())
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {

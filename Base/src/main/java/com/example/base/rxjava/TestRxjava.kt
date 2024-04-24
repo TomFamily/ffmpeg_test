@@ -266,7 +266,7 @@ fun testCompose() {
      * 在RxJava中，compose操作符用于将一系列的操作符封装为一个可重用的操作符。它可以帮助简化代码，并提高代码的可读性和可维护性。
      * 使用compose操作符时，可以通过：ObservableTransformer 创建一个自定义的操作符，该操作符由多个其他操作符组成。
      */
-    val customOperator: ObservableTransformer<Int?, String?>? =
+    val customOperator: ObservableTransformer<Int, String> =
         ObservableTransformer { upstream: Observable<Int> ->
             upstream
                 .filter { number: Int -> number % 2 == 0 } // 过滤偶数
