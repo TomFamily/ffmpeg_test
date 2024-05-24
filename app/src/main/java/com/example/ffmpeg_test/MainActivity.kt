@@ -1,7 +1,7 @@
 package com.example.ffmpeg_test
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val fFmpegJni by lazy { FFmpegJni() }
     private var thread: Thread? = null
+    private val myAudioRecord by lazy { MyAudioRecord() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -41,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun test() {
-        testMediaPlayer()
         testRouter()
         testRxjava(this)
         testReflex()
@@ -52,24 +53,11 @@ class MainActivity : AppCompatActivity() {
         testBitmapDrawText(binding.mainViewRoundIamge2, resources, com.example.base.R.drawable.ic_ffmpeg, Color.BLACK)
     }
 
-    @SuppressLint("DiscouragedApi")
-    private fun testMediaPlayer() {
-        // MP4Player().start(binding.mainSvTest.holder, path = output_flv)
-
-        val myAudioRecord = MyAudioRecord()
-        binding.mainMediaInclude.mainAudioRecord.setOnClickListener {
-            myAudioRecord.startRecording(BASE_PATH_MEDIA, AUDIO_FILE_NAME)
-        }
-
-        binding.mainMediaInclude.mainAudioRecordStop.setOnClickListener {
-            myAudioRecord.stopRecording()
-        }
-    }
-
     @DebugLog
     private fun initPermission() {
         PermissionUtil.requestSDCardPermission(this@MainActivity, 1002) { }
         PermissionUtil.requestPermission(this, Manifest.permission.RECORD_AUDIO, 0)
+        PermissionUtil.requestPermission(this, Manifest.permission.CAMERA, 0)
     }
 
     private fun invokeJni() {
@@ -102,6 +90,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             thread?.start()
+        }
+        // MP4Player().start(binding.mainSvTest.holder, path = output_flv)
+        binding.mainMediaInclude.mainAudioRecord.setOnClickListener {
+            myAudioRecord.startRecording(BASE_PATH_MEDIA, AUDIO_FILE_NAME)
+        }
+
+        binding.mainMediaInclude.mainAudioRecordStop.setOnClickListener {
+            myAudioRecord.stopRecording()
+        }
+
+        binding.mainBtnTest.setOnClickListener {
+            startActivity(Intent(this, PreviewActivity::class.java))
         }
     }
 

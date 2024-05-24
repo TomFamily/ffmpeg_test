@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".PreviewActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview_activity_preview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="16:9"/>
+
+    <Button
+        android:id="@+id/preview_activity_btn_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/preview_activity_preview"
+        app:layout_constraintStart_toStartOf="@id/preview_activity_preview"
+        app:layout_constraintEnd_toEndOf="@id/preview_activity_preview"
+        android:text="预览开关"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
