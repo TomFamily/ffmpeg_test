@@ -2,7 +2,9 @@ package com.example.camera
 
 import android.content.Context
 import android.util.Log
+import android.util.Size
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -33,6 +35,14 @@ object PreviewManager {
     @Synchronized
     fun onStart(lf: LifecycleOwner, viewFinder: PreviewView, context: Context) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
+        val imageAnalysis = ImageAnalysis.Builder()
+            .setTargetResolution(Size(1280, 720))
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+        val executor = Executors.newFixedThreadPool(5)
+        imageAnalysis.setAnalyzer(executor) {
+        }
 
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
