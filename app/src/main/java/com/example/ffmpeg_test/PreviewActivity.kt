@@ -7,6 +7,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.example.camera.Camera2Manager
 import com.example.camera.PreviewManager
 import com.example.ffmpeg_test.databinding.ActivityPreviewBinding
 
@@ -14,6 +15,7 @@ import com.example.ffmpeg_test.databinding.ActivityPreviewBinding
 
 class PreviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPreviewBinding
+    private val camera2Manager by lazy { Camera2Manager() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPreviewBinding.inflate(layoutInflater)
@@ -24,7 +26,8 @@ class PreviewActivity : AppCompatActivity() {
 
     private fun initEvent() {
         binding.previewActivityBtnPreview.setOnClickListener {
-            PreviewManager.valve(this, binding.previewActivityPreview, this)
+            // PreviewManager.valve(this, binding.previewActivityPreview, this)
+            camera2Manager.startPreview(binding.previewActivitySurface1, binding.previewActivitySurface2, this)
         }
     }
 

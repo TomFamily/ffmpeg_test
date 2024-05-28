@@ -22,5 +22,23 @@
         app:layout_constraintEnd_toEndOf="@id/preview_activity_preview"
         android:text="预览开关"/>
 
+    <SurfaceView
+        android:id="@+id/preview_activity_surface1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/preview_activity_surface2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SurfaceView
+        android:id="@+id/preview_activity_surface2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintBottom_toBottomOf="@id/preview_activity_surface1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/preview_activity_surface1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
