@@ -2,11 +2,16 @@ package com.example.base.router
 
 import android.os.Bundle
 import android.util.Log
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.collections.HashMap
 
 class TomRouter private constructor() {
+
+    private val observableMap: MutableMap<String, Subject<*>> = HashMap()
+//     private val observableMap: MutableMap<String, Subject<Any>> = HashMap()
+
     @Synchronized
     fun clearData() {
         Log.d(TAG, "clearData")
@@ -30,15 +35,12 @@ class TomRouter private constructor() {
         return bundle.getInt(key)
     }
 
-    /**
-     * todo fly 中在获取数据时 getObservable，是如何知道数据类型的
-     */
     @Synchronized
-    fun getObservable(key: String): io.reactivex.rxjava3.core.Observable<Any> {
+    fun <T : Any> getObservable(key: String): Observable<T> {
         return if (observableMap.containsKey(key)) {
-            observableMap[key]!!.hide()
+            observableMap[key]?.hide() as Observable<T>
         } else {
-            val ob = BehaviorSubject.create<Any>()
+            val ob = BehaviorSubject.create<T>()
             observableMap[key] = ob
             ob.hide()
         }
@@ -48,7 +50,6 @@ class TomRouter private constructor() {
         private const val TAG = "TomRouter"
         private var instant: AtomicReference<TomRouter> = AtomicReference()
         private var bundle = Bundle()
-        private val observableMap: MutableMap<String, BehaviorSubject<Any>> = HashMap()
         // var synchronizedMap: Map<String, BehaviorSubject<Any>> = Collections.synchronizedMap(HashMap())
 
         @Synchronized
