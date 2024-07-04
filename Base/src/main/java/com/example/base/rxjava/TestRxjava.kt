@@ -411,6 +411,8 @@ fun testConcatMap() {
      *  1、concatMap 与 flatMap 类似，但是 concatMap 保证了发射的顺序，而 flatMap 则可以交错发射。
      *  2、对于 concatMap 中的每个映射后的 Observable，如果有一个 Observable 抛出错误，则整个序列会立即终止，
      *      并且错误会传递给订阅者。
+     *  3、switchMap 只关心最新的Observable，旧的 Observable 会被取消
+     *  4、flatMap 并行处理所有的 Observable， 并按顺序合并他们的数据项
      */
     Observable.just(1, 2, 3, 4, 5)
         .concatMap {

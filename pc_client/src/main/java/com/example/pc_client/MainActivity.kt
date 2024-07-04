@@ -9,6 +9,7 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.example.base.handler.HandlerAssistant
 import com.example.pc_client.aidl.ICallbacklInterface
 import com.example.pc_client.aidl.IManagerInterface
 import com.example.pc_client.databinding.ActivityMainBinding
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun testHilt() {
         // startActivity(Intent(this, HiltActivity::class.java))
+        HandlerAssistant.test(2)
     }
 
     //<editor-fold desc="AIDL 客户端">

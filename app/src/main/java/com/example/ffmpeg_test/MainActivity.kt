@@ -14,6 +14,7 @@ import com.example.aop_aspect.DebugLog
 import com.example.base.AUDIO_FILE_NAME
 import com.example.base.BASE_PATH_MEDIA
 import com.example.base.config.*
+import com.example.base.handler.HandlerAssistant
 import com.example.base.rxjava.*
 import com.example.ffmpeg_test.databinding.ActivityMainBinding
 import com.example.ffmpeg_test.jni.FFmpegJni
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         testBinder(this)
         TestOpenGl.test()
         ModelTestEnter.test()
-
+        HandlerAssistant.test(2)
         testBitmapDrawText(binding.mainViewRoundIamge2, resources, com.example.base.R.drawable.ic_ffmpeg, Color.BLACK)
     }
 
