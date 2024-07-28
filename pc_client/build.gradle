@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.pc_client"
-        minSdk 26
+        minSdk 27
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -52,6 +52,8 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
+
+    implementation project(":opengl")
 }
 
 kapt {
