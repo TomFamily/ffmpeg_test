@@ -13,18 +13,20 @@ public class Square {
 
     // 设置每个顶点对应的颜色，这里设置为白色
     private final float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    " gl_Position = vPosition;" +
-                    "}";
-
-    private final String fragmentShaderCode =
-            "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    " gl_FragColor = vColor;" +
-                    "}";
+    //顶点
+    private final String ver="attribute vec4 aPosition;" +
+            "uniform mat4 uMatrix;" +
+            "varying  vec4 vColor;" +
+            "attribute vec4 aColor;" +
+            "void main() {" +
+            "  gl_Position = uMatrix*aPosition;" +
+            "  vColor=aColor;" +
+            "}";
+    //片元
+    private final String frag = "precision mediump float;" +//片元一定要指定精度
+            "varying vec4 vColor;" +
+            "void main() {" +
+            "  gl_FragColor = vColor;" +
+            "}";
 
 }

@@ -1,6 +1,7 @@
 package com.android.withCamera.triangle;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -43,17 +44,21 @@ public class Triangle {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 255, 0, 0, 1.0f };*/
 
-    static float triangleCoords[] = {   // in counterclockwise order:
-            0.0f,  0.622008459f, 0.0f, // top
-            -0.5f, -0.311004243f, 0.0f, // bottom left
-            0.5f, -0.311004243f, 0.0f  // bottom right
-    };
-
-//    static float triangleCoords[] = {
-//            -0.5f, 0.5f, 0.0f, // top left
-//            -0.5f, -0.5f, 0.0f, // bottom left
-//            0.5f, -0.5f, 0.0f, // bottom right
-//            0.5f, 0.5f, 0.0f }; // top right
+//    static float triangleCoords[] = {   // in counterclockwise order:
+//            0.0f,  0.622008459f, 0.0f, // top
+//            -0.5f, -0.311004243f, 0.0f, // bottom left
+//            0.5f, -0.311004243f, 0.0f  // bottom right
+//    };
+//static float triangleCoords[] = {
+//        -0.5f, 0.5f, 0.0f, // top left
+//        -0.5f, -0.5f, 0.0f, // bottom left
+//        0.5f, 0.5f, 0.0f, // bottom right
+//        0.5f, -0.5f, 0.0f }; // top right
+    static float triangleCoords[] = {
+            -0.5f, 0.5f, 0.0f, // top left
+            -0.5f, -0.5f, 0.0f, // bottom left
+            0.5f, -0.5f, 0.0f, // bottom right
+            0.5f, 0.5f, 0.0f }; // top right
 
 
     // Set color with red, green, blue and alpha (opacity) values
@@ -76,9 +81,9 @@ public class Triangle {
         colorBuffer.put(color);
         colorBuffer.position(0);
 
-        int vertexShader = OneGlRenderer.compileShader(GLES20.GL_VERTEX_SHADER,
+        int vertexShader = compileShader(GLES20.GL_VERTEX_SHADER,
                 vertexShaderCode);
-        int fragmentShader = OneGlRenderer.compileShader(GLES20.GL_FRAGMENT_SHADER,
+        int fragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER,
                 fragmentShaderCode);
 
         // 创建空的OpenGL ES程序
@@ -138,10 +143,47 @@ public class Triangle {
                 0,colorBuffer);
 
 
-        // 画三角形
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        /**
+         * 画三角形
+         *  GL_POINTS       //将传入的顶点坐标作为单独的点绘制
+         *  GL_LINES        //将传入的坐标作为单独线条绘制，ABCDEFG六个顶点，绘制AB、CD、EF三条线
+         *  GL_LINE_STRIP   //将传入的顶点作为折线绘制，ABCD四个顶点，绘制AB、BC、CD三条线
+         *  GL_LINE_LOOP    //将传入的顶点作为闭合折线绘制，ABCD四个顶点，绘制AB、BC、CD、DA四条线。
+         *  GL_TRIANGLES    //将传入的顶点作为单独的三角形绘制，ABCDEF绘制ABC,DEF两个三角形
+         *  GL_TRIANGLE_FAN    //将传入的顶点作为扇面绘制，ABCDEF绘制ABC、ACD、ADE、AEF四个三角形
+         *  GL_TRIANGLE_STRIP   //将传入的顶点作为三角条带绘制，ABCDEF绘制ABC,BCD,CDE,DEF四个三角形
+         */
+        // GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount);
 
         // 禁用顶点数组
         GLES20.glDisableVertexAttribArray(mPositionHandle);
+    }
+
+    /**
+     * 创建编译着色器
+     * @param type
+     * @param shaderCode
+     * @return
+     */
+    public static int compileShader(int type, String shaderCode){
+        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
+        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
+        int shader = GLES20.glCreateShader(type);
+        // add the source code to the shader and compile it
+        GLES20.glShaderSource(shader, shaderCode);
+        GLES20.glCompileShader(shader);
+        // Get the compilation status.
+        final int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS,
+                compileStatus, 0);
+        // Verify the compile status.
+        if (compileStatus[0] == 0) {
+            // If it failed, delete the shader object.
+            GLES20.glDeleteShader(shader);
+            Log.e("loadShader", "Compilation of shader failed.");
+            return 0;
+        }
+        return shader;
     }
 }

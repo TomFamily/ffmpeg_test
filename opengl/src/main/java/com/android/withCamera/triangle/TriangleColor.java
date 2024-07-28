@@ -7,7 +7,8 @@
 package com.android.withCamera.triangle;
 
 
-import static com.android.withCamera.triangle.OneGlRenderer.compileShader;
+
+import static com.android.withCamera.triangle.Triangle.compileShader;
 
 import android.opengl.GLES20;
 
@@ -122,7 +123,8 @@ public class TriangleColor {
                 GLES20.GL_FLOAT,false,
                 0,colorBuffer);
         //绘制三角形
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount);
+        // GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
         //禁止顶点数组的句柄
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }

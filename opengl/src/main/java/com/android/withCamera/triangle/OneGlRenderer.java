@@ -3,7 +3,6 @@ package com.android.withCamera.triangle;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -16,7 +15,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class OneGlRenderer implements GLSurfaceView.Renderer {
     private Triangle mTriangle;
-    private TriangleColor mTriangleColor;
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -24,7 +22,6 @@ public class OneGlRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         // initialize a triangle
         mTriangle = new Triangle();
-        mTriangleColor = new TriangleColor();
     }
     private float[] mRotationMatrix = new float[16];
     public volatile float mAngle;
@@ -83,34 +80,7 @@ public class OneGlRenderer implements GLSurfaceView.Renderer {
 
         float ratio = (float) width / height;
 
-        // 这个投影矩阵被应用于对象坐标在onDrawFrame（）方法中
+        // 这个投影矩阵被应用于对象坐标在 onDrawFrame（）方法中
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-    }
-
-    /**
-     * 创建编译着色器
-     * @param type
-     * @param shaderCode
-     * @return
-     */
-    public static int compileShader(int type, String shaderCode){
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        // Get the compilation status.
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS,
-            compileStatus, 0);
-        // Verify the compile status.
-        if (compileStatus[0] == 0) {
-            // If it failed, delete the shader object.
-            GLES20.glDeleteShader(shader);
-            Log.e("loadShader", "Compilation of shader failed.");
-            return 0;
-        }
-        return shader;
     }
 }
