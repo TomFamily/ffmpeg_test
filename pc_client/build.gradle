@@ -54,6 +54,7 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.44"
 
     implementation project(":opengl")
+    implementation project(":camera")
 }
 
 kapt {

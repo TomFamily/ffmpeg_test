@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.base.config.output_flv
+import com.example.base.config.video_mp4
 
 /**
  * surface keep 机制
@@ -22,7 +22,7 @@ class CameraView(context: Context, attributeSet: AttributeSet): ConstraintLayout
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         Log.d(TAG, "onAttachedToWindow: ")
-        CameraStrong.createBlob(myTextureView, output_flv, myTextureView.id.toString())
+        CameraStrong.createBlob(myTextureView, video_mp4, myTextureView.id.toString())
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {

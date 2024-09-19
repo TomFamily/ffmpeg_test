@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.android.withCamera.CameraPlayWithOpenglActivity
 import com.example.base.handler.HandlerAssistant
+import com.example.camera.CameraOpenGLManager
 import com.example.pc_client.aidl.ICallbacklInterface
 import com.example.pc_client.aidl.IManagerInterface
 import com.example.pc_client.databinding.ActivityMainBinding
@@ -39,10 +40,17 @@ class MainActivity : AppCompatActivity() {
         initEvent()
         testHilt()
         testOpenGL()
+        initCamera()
+    }
+
+    private fun initCamera() {
+        CameraOpenGLManager(this, viewBinding.mainGlSurface).also {
+            it.openCamera()
+        }
     }
 
     private fun testOpenGL() {
-        startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
+        // startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
     }
 
     private fun testHilt() {

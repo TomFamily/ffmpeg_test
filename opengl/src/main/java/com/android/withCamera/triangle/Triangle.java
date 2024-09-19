@@ -44,6 +44,7 @@ public class Triangle {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 255, 0, 0, 1.0f };*/
 
+    // 三角形
 //    static float triangleCoords[] = {   // in counterclockwise order:
 //            0.0f,  0.622008459f, 0.0f, // top
 //            -0.5f, -0.311004243f, 0.0f, // bottom left

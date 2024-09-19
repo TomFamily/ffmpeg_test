@@ -25,6 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue
  *Created by arno.yang
  *Created on 2024/5/28 10:26
  *PackageName com.example.jni_test.camera
+ *
+ * mediaDeCodec + imageReader + camera2 + surfaceView
  */
 class Camera2Manager : CameraDevice.StateCallback(), ImageReader.OnImageAvailableListener {
     companion object {

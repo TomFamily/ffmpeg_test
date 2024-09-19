@@ -1,4 +1,4 @@
-package com.example.ffmpeg_test.uitls;
+package com.example.base.utils;
 
 import android.Manifest;
 import android.app.Activity;

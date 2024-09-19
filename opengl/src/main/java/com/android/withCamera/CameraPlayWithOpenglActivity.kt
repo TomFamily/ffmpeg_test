@@ -3,7 +3,6 @@ package com.android.withCamera
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.android.withCamera.square.MyRenderer
 import com.example.opengl.R
 
 class CameraPlayWithOpenglActivity : AppCompatActivity() {
@@ -17,6 +16,6 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
     private fun testSquare() {
         val view = findViewById<GLSurfaceView>(R.id.square_gl_test)
         view.setEGLContextClientVersion(2)
-        view.setRenderer(MyRenderer())
+        // view.setRenderer(MyRenderer())
     }
 }
