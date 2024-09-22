@@ -13,6 +13,7 @@ import com.example.camera.render.CameraV1GLRenderer
 
 /**
  * opengl + TextView + Camera1 实现图像黑白预览
+ * 参考：https://blog.csdn.net/lb377463323/article/details/77096652
  */
 class OpenGLTextView(context: Context, attributeSet: AttributeSet): TextureView(context, attributeSet) {
 
