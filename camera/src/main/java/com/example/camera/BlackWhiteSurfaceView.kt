@@ -20,6 +20,7 @@ import javax.microedition.khronos.opengles.GL10
 
 /**
  * camera1 + openGL + GLSurfaceView 实现黑白预览
+ * 参考文章：https://blog.csdn.net/lb377463323/article/details/77071054
  */
 class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
     GLSurfaceView(context, attributeSet), SurfaceTexture.OnFrameAvailableListener {
@@ -52,10 +53,24 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
         private val mMVPMatrix = FloatArray(16)
         private val mTempMatrix = FloatArray(16)
         private val mPosCoordinate = floatArrayOf(
-            -1f, -1f, -1f, 1f, 1f, -1f, 1f, 1f
+            -1f, -1f,
+            -1f, 1f,
+            1f, -1f,
+            1f, 1f
         )
+        // 纹理坐标系（数学基础坐标系）
+//        private val mTexCoordinate = floatArrayOf(
+//            0f, 1f,
+//            1f, 1f,
+//            0f, 0f,
+//            1f, 0f
+//        )
+        // 纹理坐标系（数学基础坐标系） 纹理 反转 180度
         private val mTexCoordinate = floatArrayOf(
-            0f, 1f, 1f, 1f, 0f, 0f, 1f, 0f
+            1f, 0f,
+            0f, 0f,
+            1f, 1f,
+            0f, 1f,
         )
         private var mPosBuffer: FloatBuffer? = null
         private var mTexBuffer: FloatBuffer? = null
@@ -138,24 +153,19 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             // mCameraTexture.getTransformMatrix(mTempMatrix);//获取到图像数据流的坐标变换矩阵
             //  Matrix.multiplyMM(mTempMatrix, 0, mTempMatrix, 0, mMVPMatrix, 0);
 
-            // camera 预览反转了180度，想转回来，此方法无效
-//            // 创建一个新的矩阵，用于存储旋转矩阵
-//            val rotationMatrix = FloatArray(16)
-//            // 生成 180 度的旋转矩阵，绕 Z 轴旋转
-//            Matrix.setIdentityM(rotationMatrix, 0) // 初始化为单位矩阵
-//            Matrix.rotateM(rotationMatrix, 0, 180f, 0f, 0f, 1f) // 绕 Z 轴旋转 180 度
-//            // 先计算 MVP 矩阵
-//            Matrix.multiplyMM(mMVPMatrix, 0, rotationMatrix, 0, mMVPMatrix, 0)
-
-
             GLES20.glUniformMatrix4fv(
                 mMVPMatrixHandle, 1,
             // 指示矩阵是否要转置，这里设置为 false，表示不转置。
                 false,
                 mMVPMatrix, 0)
+
             // 绘制几何图形。
             GLES20.glDrawArrays(
-                // 绘制方式，这里使用三角形条带。
+                // GLES20.GL_TRIANGLES, // 绘制三角形
+
+                // 绘制方式，这里使用三角形条带： 使用 GL_TRIANGLE_STRIP，每增加一个顶点，就会形成一个新的三角形。
+                // 第一个三角形由前三个顶点构成，第二个三角形则利用前两个顶点和最后一个顶点。通过共享顶点，
+                // GL_TRIANGLE_STRIP 能够高效地绘制多个三角形。只需设置合适的顶点数组和绘制调用，即可实现这一效果。
                 GLES20.GL_TRIANGLE_STRIP,
                 0, mPosCoordinate.size / 2
             )
