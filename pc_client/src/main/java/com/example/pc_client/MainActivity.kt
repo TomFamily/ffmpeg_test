@@ -44,9 +44,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCamera() {
-        CameraOpenGLManager(this, viewBinding.mainGlSurface).also {
-            it.openCamera()
-        }
+//        CameraOpenGLManager(this, viewBinding.mainGlSurface).also {
+//            it.openCamera()
+//        }
     }
 
     private fun testOpenGL() {

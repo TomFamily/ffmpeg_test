@@ -11,7 +11,8 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 /**
- * camera1 + openGL + GLSurfaceView
+ * CameraOpenGLManager：
+ * GLSurfaceView + camera1 预览图像
  */
 class CameraOpenGLManager(private val context: Context, private val mGLSurfaceView: GLSurfaceView) {
     private var mCameraId = -1
@@ -54,6 +55,8 @@ class CameraOpenGLManager(private val context: Context, private val mGLSurfaceVi
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
+                mCamera?.stopPreview()
+                mCamera?.release()
             }
 
         })
