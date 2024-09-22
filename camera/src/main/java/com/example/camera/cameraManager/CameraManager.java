@@ -8,6 +8,9 @@ import android.hardware.Camera;
 import java.io.IOException;
 
 
+/**
+ * Camera1
+ */
 public class CameraManager {
 
     private Camera mCamera = null;

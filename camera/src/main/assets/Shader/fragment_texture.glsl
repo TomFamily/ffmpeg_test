@@ -3,6 +3,7 @@ precision mediump float;
 //外部纹理采样器
 uniform samplerExternalOES videoTex;
 varying vec2 textureCoordinate;
+uniform bool useGrayscale; // 控制是否使用灰度
 
 void main() {
     //获取此纹理（预览图像）对应坐标的颜色值

@@ -42,7 +42,14 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.example.camera.BlackWhiteSurfaceView
+<!--    <com.example.camera.BlackWhiteSurfaceView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintDimensionRatio="16:9"-->
+<!--        app:layout_constraintTop_toTopOf="parent"/>-->
+
+    <com.example.camera.OpenGLTextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"

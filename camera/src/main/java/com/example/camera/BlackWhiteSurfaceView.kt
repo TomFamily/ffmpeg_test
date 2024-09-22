@@ -103,6 +103,7 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             mTexBuffer = BufferUtil.convertToFloatBuffer(mTexCoordinate)
             // glVertexAttribPointer()：这个方法用于指定如何在顶点着色器中读取顶点属性数据。
             GLES20.glVertexAttribPointer(
+                // index 参数决定了你在顶点着色器中使用哪个顶点属性。这通常对应于在着色器中声明的 layout(location = n)，其中 n 是属性的位置。
                 uPosHandle,
                 // 这个值表示每个顶点属性的组件数量。在这个例子中，2 表示每个顶点仅有两个分量，通常用于表示二维坐标
                 2,
