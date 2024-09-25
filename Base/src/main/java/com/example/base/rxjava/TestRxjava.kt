@@ -9,7 +9,9 @@ import com.example.base.MyApplication
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit
  */
 
 private const val TAG = "TestRxjava"
+private val mCompositeDisposable by lazy { CompositeDisposable() }
 
 fun main() {
     // testDefer()
@@ -35,6 +38,42 @@ fun testRxjava(context: Context) {
     testFlatMap()
     testThread()
     testDebounce()
+    testDistinctUntilChangedWithInternal()
+}
+
+fun testDistinctUntilChangedWithInternal() {
+    val list = listOf(1,2,3)
+    val ob = BehaviorSubject.createDefault(list)
+    Observable.interval(500, TimeUnit.MILLISECONDS).subscribe {
+        ob.onNext(list)
+    }.addTo(mCompositeDisposable)
+
+    ob.compose(distinctUntilChangedWithInternal(1000, 10)).subscribe {
+        Log.d(TAG, "testDistinctUntilChangedWithInternal: ${it.toTypedArray().contentToString()}")
+    }.addTo(mCompositeDisposable)
+}
+
+/**
+ * @param internal 重复消息发送的冷却时长,单位:[TimeUnit.MILLISECONDS
+ * @param deviation 冷却时长容忍的偏差(Android未非实时操作系统),单位:[TimeUnit.MILLISECONDS]
+ */
+fun <T : Any> distinctUntilChangedWithInternal(internal: Int, deviation: Int): ObservableTransformer<T, T> {
+    if (internal <= deviation || internal <= 0 || deviation < 0) {
+        throw java.lang.IllegalArgumentException("非法参数: internal <= deviation || internal <= 0 || deviation < 0: $internal deviation:$deviation")
+    }
+
+    return object : ObservableTransformer<T, T> {
+        override fun apply(upstream: Observable<T>): ObservableSource<T> {
+            return upstream.timestamp()
+                .scan { t1, t2 ->
+                    val time = t2.time() - t1.time()
+                    val res = (time > (internal - deviation)) || (t2.value() != t1.value())
+                    return@scan if (res) t2 else t1
+                }
+                .distinctUntilChanged()
+                .map { it.value() }
+        }
+    }
 }
 
 /**

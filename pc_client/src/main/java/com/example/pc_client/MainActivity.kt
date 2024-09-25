@@ -9,13 +9,11 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.android.withCamera.CameraPlayWithOpenglActivity
 import com.example.base.handler.HandlerAssistant
-import com.example.camera.CameraOpenGLManager
+import com.example.base.rxjava.testRxjava
 import com.example.pc_client.aidl.ICallbacklInterface
 import com.example.pc_client.aidl.IManagerInterface
 import com.example.pc_client.databinding.ActivityMainBinding
-import com.example.pc_client.hilt.HiltActivity
 
 // AIDL简单Demo： https://juejin.cn/post/6844903661403914254
 /**
@@ -41,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         testHilt()
         testOpenGL()
         initCamera()
+        testRxjava(this)
     }
 
     private fun initCamera() {
