@@ -30,7 +30,8 @@ fun main() {
     // testDefer()
     testDefer2()
 }
-
+/** rxjava 文档 */
+// rxjava 文档：https://www.bookstack.cn/read/RxDocs/Intro.md
 fun testRxjava(context: Context) {
     testScheduler(context)
     testDelaySubscription()
@@ -39,6 +40,59 @@ fun testRxjava(context: Context) {
     testThread()
     testDebounce()
     testDistinctUntilChangedWithInternal()
+    testShareObservable()
+    testReplayObservable()
+}
+
+/**
+ * replay的作用：
+ * 1、共享数据流：多个观察者可以共享同一个数据流，避免重复的计算或网络请求。
+ * 2、处理异步数据：在处理异步数据流时，replay 确保即使在某个时刻没有任何观察者，依然能保存并重放数据。
+ * 3、支持慢速消费者：即使某些消费者速度较慢，也能确保它们接收到所有的数据。
+ */
+
+/**
+ * 在 RxJava 中，Observable 是一种数据流，允许你异步处理数据。ConnectableObservable 是一种特殊类型的
+ * Observable，它不会立即开始发射数据，直到你调用 connect() 方法。这种特性使得多个观察者能够共享相同的数据流。
+ *
+ * refCount() 可以将 ConnectableObservable 转换为普通的 Observable。它的主要作用是：
+ * 1、自动连接：当至少有一个观察者订阅时，refCount() 会自动调用 connect() 方法开始发射数据流。
+ * 2、引用计数：它会维护一个引用计数器。当订阅者数量从零增加到一时，开始连接；当订阅者数量减少到零时，自动断开连接。
+ *
+ * replay + refCount = 加强版的 share
+ */
+private val replayObservable = Observable.interval(2, TimeUnit.SECONDS)
+    .doOnNext { Log.d(TAG, "replayObservable: 1") }
+    .replay(1)
+    .refCount()
+    .doOnNext { Log.d(TAG, "replayObservable: 2") }
+fun testReplayObservable() {
+    replayObservable.subscribe {
+
+    }.addTo(mCompositeDisposable)
+    replayObservable.subscribe {
+
+    }.addTo(mCompositeDisposable)
+}
+
+/**
+ * Publish 操作符的作用：
+ * 1、共享数据流:当多个订阅者订阅同一个 Observable 时，每个订阅者都会单独接收数据流。而使用 Publish 操作符，
+ * 可以将这个数据流共享给所有订阅者。
+ * 2、控制数据发射:使用 Publish 后，数据不会在 Observable 被创建时立即发射。需要显式调用 connect()
+ * 方法来开始数据发射。这意味着可以在所有订阅者都准备好之后再发射数据。
+ */
+private val shareObservable = Observable.interval(2, TimeUnit.SECONDS)
+    .doOnNext { Log.d(TAG, "shareObservable: 1") }
+    .share() // share 为 publish 与 recount 的结合
+    .doOnNext { Log.d(TAG, "shareObservable: 2") }
+private fun testShareObservable() {
+    shareObservable.subscribe {
+
+    }.addTo(mCompositeDisposable)
+    shareObservable.subscribe {
+
+    }.addTo(mCompositeDisposable)
 }
 
 fun testDistinctUntilChangedWithInternal() {
