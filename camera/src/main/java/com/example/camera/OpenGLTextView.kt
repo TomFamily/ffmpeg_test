@@ -34,7 +34,7 @@ class OpenGLTextView(context: Context, attributeSet: AttributeSet): TextureView(
 
                 val dm = DisplayMetrics()
                 mCamera = CameraV1(context as Activity)
-                mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK
+                mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT
                 if (!mCamera!!.openCamera(dm.widthPixels, dm.heightPixels, mCameraId)) {
                     return
                 }

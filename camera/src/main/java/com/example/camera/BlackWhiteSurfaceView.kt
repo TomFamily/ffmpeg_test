@@ -3,17 +3,18 @@ package com.example.camera
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.SurfaceTexture
-import android.opengl.GLES11Ext
-import android.opengl.GLES20
-import android.opengl.GLSurfaceView
-import android.opengl.Matrix
+import android.opengl.*
 import android.util.AttributeSet
 import android.util.Log
 import com.example.base.poengl.BufferUtil
 import com.example.base.poengl.ShaderUtils
 import com.example.base.utils.PermissionUtil
 import com.example.camera.cameraManager.CameraManager
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -24,6 +25,9 @@ import javax.microedition.khronos.opengles.GL10
  */
 class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
     GLSurfaceView(context, attributeSet), SurfaceTexture.OnFrameAvailableListener {
+
+    // 水印纹理
+    private var watermarkTexture = 0
 
     init {
         initPermission()
@@ -47,16 +51,27 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
         private var mProgram = 0
         private var uPosHandle = 0
         private var aTexHandle = 0
+        private var filterSecondTextureCoordinateAttribute = 0
+        private var filterInputTextureUniform = 0
+        private var filterInputTextureUniform2 = 0
         private var mMVPMatrixHandle = 0
         private val mProjectMatrix = FloatArray(16)
         private val mCameraMatrix = FloatArray(16)
         private val mMVPMatrix = FloatArray(16)
         private val mTempMatrix = FloatArray(16)
+        private var texture2CoordinatesBuffer: ByteBuffer? = null
         private val mPosCoordinate = floatArrayOf(
             -1f, -1f,
             -1f, 1f,
             1f, -1f,
             1f, 1f
+        )
+
+        private val TEXTURE_NO_ROTATION = floatArrayOf(
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f
         )
         // 纹理坐标系（数学基础坐标系）
 //        private val mTexCoordinate = floatArrayOf(
@@ -98,6 +113,9 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             uPosHandle = GLES20.glGetAttribLocation(mProgram, "position")
             aTexHandle = GLES20.glGetAttribLocation(mProgram, "inputTextureCoordinate")
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "textureTransform")
+            filterSecondTextureCoordinateAttribute = GLES20.glGetAttribLocation(mProgram, "inputTextureCoordinate2")
+            filterInputTextureUniform = GLES20.glGetUniformLocation(mProgram, "inputImageTexture")
+            filterInputTextureUniform2 = GLES20.glGetUniformLocation(mProgram, "inputImageTexture2") // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
 
             mPosBuffer = BufferUtil.convertToFloatBuffer(mPosCoordinate)
             mTexBuffer = BufferUtil.convertToFloatBuffer(mTexCoordinate)
@@ -122,6 +140,17 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             // 尽管你已经设置了顶点数据和指针，但在绘制时，着色器将无法读取该属性的数据，导致渲染结果不正确。
             GLES20.glEnableVertexAttribArray(uPosHandle)
             GLES20.glEnableVertexAttribArray(aTexHandle)
+
+            // watermarkTexture = loadTexture()
+            // setRotation()
+        }
+
+        private fun setRotation() {
+            val bBuffer = ByteBuffer.allocateDirect(32).order(ByteOrder.nativeOrder())
+            val fBuffer = bBuffer.asFloatBuffer()
+            fBuffer.put(TEXTURE_NO_ROTATION)
+            fBuffer.flip()
+            texture2CoordinatesBuffer = bBuffer
         }
 
         override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
@@ -170,6 +199,26 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
                 GLES20.GL_TRIANGLE_STRIP,
                 0, mPosCoordinate.size / 2
             )
+
+            // drawWatermark()
+        }
+
+        private fun drawWatermark() {
+            // TODO: 2024/10/16 融合操作
+            GLES20.glEnableVertexAttribArray(filterSecondTextureCoordinateAttribute)
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, watermarkTexture)
+            GLES20.glUniform1i(filterInputTextureUniform2, 3)
+
+            texture2CoordinatesBuffer?.position(0)
+            GLES20.glVertexAttribPointer(
+                filterSecondTextureCoordinateAttribute,
+                2,
+                GLES20.GL_FLOAT,
+                false,
+                0,
+                texture2CoordinatesBuffer
+            )
         }
 
         /**
@@ -177,7 +226,8 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
          */
         private fun createAndBindVideoTexture() {
             val texture = IntArray(1)
-            GLES20.glGenTextures(1, texture, 0) //生成一个OpenGl纹理
+            //生成一个OpenGl纹理
+            GLES20.glGenTextures(1, texture, 0)
             //申请纹理存储区域并设置相关参数
             GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0])
             GLES20.glTexParameterf(
@@ -206,7 +256,23 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             mCameraTexture = SurfaceTexture(texture[0])
             //设置SurfaceTexture的回调，通过摄像头预览数据已更新
             mCameraTexture!!.setOnFrameAvailableListener(this@BlackWhiteSurfaceView)
+            // GLES20.glUniform1i(filterInputTextureUniform, 0)
         }
+
+        private fun loadTexture(): Int {
+            val textureHandle = IntArray(1)
+            GLES20.glGenTextures(1, textureHandle, 0)
+            if (textureHandle[0] != 0) {
+                val bitmap: Bitmap = BitmapFactory.decodeResource(resources, com.example.base.R.drawable.ic_launcher2)
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST)
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST)
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
+                bitmap.recycle()
+            }
+            return textureHandle[0]
+        }
+
 
         fun onDestroy() {
             GLES20.glDisableVertexAttribArray(uPosHandle)
