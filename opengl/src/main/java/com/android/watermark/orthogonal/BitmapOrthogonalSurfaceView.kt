@@ -9,6 +9,5 @@ class BitmapOrthogonalSurfaceView(context: Context, attributeSet: AttributeSet):
 
     init {
          setRender(BitmapOrthogonalRender(context))
-//        setRender(YBitmapRender(context))
     }
 }

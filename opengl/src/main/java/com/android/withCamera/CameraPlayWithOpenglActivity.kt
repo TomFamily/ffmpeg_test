@@ -10,6 +10,7 @@ import com.example.opengl.R
 class CameraPlayWithOpenglActivity : AppCompatActivity() {
     private lateinit var graphicalSurfaceView: SurfaceView
     private lateinit var bitmapSurfaceView: SurfaceView
+    private lateinit var orthogonalSurfaceView: SurfaceView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +23,7 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
     private fun initView() {
         graphicalSurfaceView = findViewById(R.id.test_graphical)
         bitmapSurfaceView = findViewById(R.id.test_bitmap)
+        orthogonalSurfaceView = findViewById(R.id.test_orthogonal)
     }
 
     private fun initEvent() {
@@ -33,6 +35,12 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.test_bitmap_btn).setOnClickListener {
             bitmapSurfaceView.also {
+                it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
+            }
+        }
+
+        findViewById<Button>(R.id.test_orthogonal_btn).setOnClickListener {
+            orthogonalSurfaceView.also {
                 it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
             }
         }

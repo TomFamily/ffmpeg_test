@@ -128,7 +128,7 @@ class BitmapOrthogonalRender(val context: Context): YGLSurfaceView.YGLRender {
 
     override fun onDrawFrame() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        GLES20.glClearColor(1f,0f, 0f, 1f)
+        GLES20.glClearColor(0f,0f, 1f, 1f)
 
         GLES20.glUseProgram(program)
         GLES20.glUniformMatrix4fv(u_matrix, 1, false, matrix, 0)
