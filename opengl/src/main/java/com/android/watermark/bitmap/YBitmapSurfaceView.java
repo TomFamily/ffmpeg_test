@@ -1,9 +1,9 @@
-package com.example.camera.watermark.bitmap;
+package com.android.watermark.bitmap;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.example.camera.watermark.egl.YGLSurfaceView;
+import com.android.watermark.egl.YGLSurfaceView;
 
 /**
  * author : York

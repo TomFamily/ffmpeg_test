@@ -9,6 +9,7 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.android.withCamera.CameraPlayWithOpenglActivity
 import com.example.base.handler.HandlerAssistant
 import com.example.base.rxjava.testRxjava
 import com.example.pc_client.aidl.ICallbacklInterface
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         testHilt()
         testOpenGL()
         initCamera()
-        testRxjava(this)
+        // testRxjava(this)
     }
 
     private fun initCamera() {
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testOpenGL() {
-        // startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
+         startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
     }
 
     private fun testHilt() {

@@ -1,4 +1,4 @@
-package com.example.camera.watermark.bitmap;
+package com.android.watermark.bitmap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,9 +7,9 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
 
-import com.example.camera.R;
-import com.example.camera.watermark.egl.YGLSurfaceView;
-import com.example.camera.watermark.egl.YShaderUtil;
+import com.android.watermark.egl.YGLSurfaceView;
+import com.android.watermark.egl.YShaderUtil;
+import com.example.opengl.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -135,6 +135,6 @@ public class YBitmapRender implements YGLSurfaceView.YGLRender {
     @Override
     public void surfaceDestroyed() {
         Log.d(TAG, "surfaceDestroyed: ");
-        bitmap.recycle();//用完及时回收
+        // bitmap.recycle();//用完及时回收
     }
 }

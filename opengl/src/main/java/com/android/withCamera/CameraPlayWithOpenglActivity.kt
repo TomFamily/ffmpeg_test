@@ -1,21 +1,41 @@
 package com.android.withCamera
 
-import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.view.SurfaceView
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.opengl.R
 
 class CameraPlayWithOpenglActivity : AppCompatActivity() {
+    private lateinit var graphicalSurfaceView: SurfaceView
+    private lateinit var bitmapSurfaceView: SurfaceView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera_play_with_opengl)
 
-        testSquare()
+        initView()
+        initEvent()
     }
 
-    private fun testSquare() {
-        val view = findViewById<GLSurfaceView>(R.id.square_gl_test)
-        view.setEGLContextClientVersion(2)
-        // view.setRenderer(MyRenderer())
+    private fun initView() {
+        graphicalSurfaceView = findViewById(R.id.test_graphical)
+        bitmapSurfaceView = findViewById(R.id.test_bitmap)
     }
+
+    private fun initEvent() {
+        findViewById<Button>(R.id.test_graphical_btn).setOnClickListener {
+            graphicalSurfaceView.also {
+                it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
+            }
+        }
+
+        findViewById<Button>(R.id.test_bitmap_btn).setOnClickListener {
+            bitmapSurfaceView.also {
+                it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
+            }
+        }
+    }
+
 }
