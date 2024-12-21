@@ -11,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="绑定服务"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,26 +33,22 @@
         app:layout_constraintStart_toStartOf="@id/main_btn_bind_service"
         app:layout_constraintTop_toBottomOf="@id/main_btn_send_data" />
 
-<!--    <android.opengl.GLSurfaceView-->
-<!--        android:id="@+id/main_gl_surface"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintDimensionRatio="16:9"-->
-<!--        app:layout_constraintTop_toTopOf="parent"/>-->
+    <Button
+        android:id="@+id/mainBtnTestWatermark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="水印测试"
+        app:layout_constraintEnd_toEndOf="@id/main_btn_bind_service"
+        app:layout_constraintStart_toStartOf="@id/main_btn_bind_service"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_unbind_service" />
 
-    <com.example.camera.BlackWhiteSurfaceView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-<!--    <com.example.camera.OpenGLTextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintDimensionRatio="16:9"-->
-<!--        app:layout_constraintTop_toTopOf="parent"/>-->
+    <Button
+        android:id="@+id/mainBtnTestGLCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="水印相机"
+        app:layout_constraintEnd_toEndOf="@id/main_btn_bind_service"
+        app:layout_constraintStart_toStartOf="@id/main_btn_bind_service"
+        app:layout_constraintTop_toBottomOf="@id/mainBtnTestWatermark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

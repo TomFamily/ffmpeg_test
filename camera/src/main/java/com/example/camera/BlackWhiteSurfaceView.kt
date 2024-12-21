@@ -74,19 +74,19 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             1.0f, 0.0f
         )
         // 纹理坐标系（数学基础坐标系）
-//        private val mTexCoordinate = floatArrayOf(
-//            0f, 1f,
-//            1f, 1f,
-//            0f, 0f,
-//            1f, 0f
-//        )
-        // 纹理坐标系（数学基础坐标系） 纹理 反转 180度
         private val mTexCoordinate = floatArrayOf(
-            1f, 0f,
-            0f, 0f,
-            1f, 1f,
             0f, 1f,
+            1f, 1f,
+            0f, 0f,
+            1f, 0f
         )
+        // 纹理坐标系（数学基础坐标系） 纹理 反转 180度
+//        private val mTexCoordinate = floatArrayOf(
+//            1f, 0f,
+//            0f, 0f,
+//            1f, 1f,
+//            0f, 1f,
+//        )
         private var mPosBuffer: FloatBuffer? = null
         private var mTexBuffer: FloatBuffer? = null
 

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.withCamera.CameraPlayWithOpenglActivity
 import com.example.base.handler.HandlerAssistant
 import com.example.base.rxjava.testRxjava
+import com.example.camera.GLCameraActivity
 import com.example.pc_client.aidl.ICallbacklInterface
 import com.example.pc_client.aidl.IManagerInterface
 import com.example.pc_client.databinding.ActivityMainBinding
@@ -38,19 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         initEvent()
         testHilt()
-        testOpenGL()
-        initCamera()
         // testRxjava(this)
-    }
-
-    private fun initCamera() {
-//        CameraOpenGLManager(this, viewBinding.mainGlSurface).also {
-//            it.openCamera()
-//        }
-    }
-
-    private fun testOpenGL() {
-         startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
     }
 
     private fun testHilt() {
@@ -118,6 +107,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d(TAG, "initEvent: isAlive ${managerInterface?.asBinder()?.isBinderAlive}")
             }
+        }
+
+        viewBinding.mainBtnTestWatermark.setOnClickListener {
+            startActivity(Intent(this, CameraPlayWithOpenglActivity::class.java))
+        }
+
+        viewBinding.mainBtnTestGLCamera.setOnClickListener {
+            startActivity(Intent(this, GLCameraActivity::class.java))
         }
     }
     //</editor-fold>
