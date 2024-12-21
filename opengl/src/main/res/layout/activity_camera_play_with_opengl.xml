@@ -27,6 +27,14 @@
         android:id="@+id/test_orthogonal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.android.watermark.textures.TexturesSurfaceView
+        android:id="@+id/test_textures"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -53,6 +61,14 @@
         app:layout_constraintStart_toStartOf="@id/test_graphical_btn"
         app:layout_constraintTop_toBottomOf="@id/test_bitmap_btn"
         android:text="正交测试"/>
+
+    <Button
+        android:id="@+id/test_textures_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/test_graphical_btn"
+        app:layout_constraintTop_toBottomOf="@id/test_orthogonal_btn"
+        android:text="多纹理测试"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
