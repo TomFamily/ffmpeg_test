@@ -118,6 +118,7 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
         drawText()
     }
 
+    @Synchronized
     private fun drawBg() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glClearColor(0f, 0f, 1f, 1f)
@@ -188,6 +189,7 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
         }
     }
 
+    @Synchronized
     override fun surfaceDestroyed() {
         if (::bitmap.isInitialized) bitmap.recycle()
     }
