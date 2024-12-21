@@ -43,8 +43,8 @@ public class TextureUtils {
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
         //退出 纹理的设置，进入下一环节
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        bitmap.recycle();
         return textureIds[0];
-
     }
 
     /**
@@ -57,7 +57,7 @@ public class TextureUtils {
      * @param padding   文字与边距距离
      * @return 文字水印的 bitmap
      */
-    public static Bitmap createTextImage(String text, int textSize, String textColor, String bgColor, int padding) {
+    public static Bitmap createTextBitmap(String text, int textSize, String textColor, String bgColor, int padding) {
 
         Paint paint = new Paint();
         paint.setColor(Color.parseColor(textColor));

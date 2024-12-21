@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.opengl.GLUtils
+import com.android.watermark.egl.TextureUtils
 import com.android.watermark.egl.YGLSurfaceView
 import com.android.watermark.egl.YShaderUtil
 import com.example.opengl.R
@@ -20,24 +21,38 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
     private var vertexBuffer: FloatBuffer
     private var fragmentBuffer: FloatBuffer
     private lateinit var bitmap: Bitmap
+    private var vboId = 0
+    private var smallBitmapTextureId = 0
+    private var textTextureId = 0
+    private val vertexArr = floatArrayOf(
+        -1f, -1f,
+        1f, -1f,
+        -1f, 1f,
+        1f, 1f,
+
+        //用来 加一个 图片水印 到左上角
+        0f, 0.5f,
+        1f, 0.5f,
+        0f, 1f,
+        1f, 1f,
+
+        //用来 加一个文字水印 到右下角
+        0f, -1f,
+        1f, -1f,
+        0f, -0.8f,
+        1f, -0.8f
+    )
+
+    private val fragmentArr = floatArrayOf(
+        0f, 1f,
+        1f, 1f,
+        0f, 0f,
+        1f, 0f,
+    )
 
     init {
-        val vertexArr = floatArrayOf(
-            -1f, -1f,
-            1f, -1f,
-            -1f, 1f,
-            1f, 1f,
-        )
-
         vertexBuffer = ByteBuffer.allocateDirect(vertexArr.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexArr)
         vertexBuffer.position(0)
-
-        val fragmentArr = floatArrayOf(
-            0f, 1f,
-            1f, 1f,
-            0f, 0f,
-            1f, 0f,
-        )
         fragmentBuffer = ByteBuffer.allocateDirect(vertexArr.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(fragmentArr)
         fragmentBuffer.position(0)
     }
@@ -49,6 +64,22 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
 
         vPosition = GLES20.glGetAttribLocation(program, "vPosition")
         fPosition = GLES20.glGetAttribLocation(program, "fPosition")
+
+        //设置文字支持透明
+        GLES20.glEnable(GLES20.GL_BLEND)
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+
+        //<editor-fold desc="VBO">
+        val vbo_s = IntArray(1)
+        GLES20.glGenBuffers(1, vbo_s, 0)
+        vboId = vbo_s[0]
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexArr.size * 4 + fragmentArr.size * 4, null, GLES20.GL_STATIC_DRAW)
+        GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0, vertexArr.size * 4, vertexBuffer)
+        GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, vertexArr.size * 4, fragmentArr.size * 4, fragmentBuffer)
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0)
+        //</editor-fold>
 
         textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
@@ -64,10 +95,15 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
 
         if (!::bitmap.isInitialized || bitmap.isRecycled) bitmap = loadBitmap()
+
+        smallBitmapTextureId = TextureUtils.createImageTexture(context, R.drawable.ic_launcher)
+
+        val bitmap = TextureUtils.createTextBitmap("Hello",25, "#ff0000", "#00000000", 0)
+        textTextureId = TextureUtils.loadBitmapTexture(bitmap)
     }
 
     private fun loadBitmap(): Bitmap {
-        return BitmapFactory.decodeResource(context.resources, R.drawable.nobb)
+        return BitmapFactory.decodeResource(context.resources, R.drawable.byg)
     }
 
     override fun onSurfaceChanged(width: Int, height: Int) {
@@ -75,15 +111,23 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
     }
 
     override fun onDrawFrame() {
+        drawBg()
+        drawSmallImage()
+        drawText()
+    }
+
+    private fun drawBg() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glClearColor(0f, 0f, 1f, 1f)
 
         GLES20.glUseProgram(program)
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
 
         GLES20.glEnableVertexAttribArray(vPosition)
-        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer)
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 0)
+
         GLES20.glEnableVertexAttribArray(fPosition)
-        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, fragmentBuffer)
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArr.size * 4)
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
@@ -96,7 +140,32 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
          */
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
+    }
 
+    private fun drawSmallImage() {
+        //图片水印
+        //从VBO中获取图片水印的坐标，并使能
+        GLES20.glEnableVertexAttribArray(vPosition)
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 32)
+        GLES20.glEnableVertexAttribArray(fPosition)
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArr.size * 4)
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, smallBitmapTextureId)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
+    }
+
+    private fun drawText() {
+        //图片水印
+        //从VBO中获取图片水印的坐标，并使能
+        GLES20.glEnableVertexAttribArray(vPosition)
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 64)
+        GLES20.glEnableVertexAttribArray(fPosition)
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArr.size * 4)
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textTextureId)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
 
     override fun surfaceDestroyed() {
