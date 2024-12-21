@@ -9,9 +9,13 @@ import com.android.watermark.egl.TextureUtils
 import com.android.watermark.egl.YGLSurfaceView
 import com.android.watermark.egl.YShaderUtil
 import com.example.opengl.R
+import java.lang.System.currentTimeMillis
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
     private var program: Int = -1
@@ -98,8 +102,6 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
 
         smallBitmapTextureId = TextureUtils.createImageTexture(context, R.drawable.ic_launcher)
 
-        val bitmap = TextureUtils.createTextBitmap("Hello",25, "#ff0000", "#00000000", 0)
-        textTextureId = TextureUtils.loadBitmapTexture(bitmap)
     }
 
     private fun loadBitmap(): Bitmap {
@@ -163,9 +165,27 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
         GLES20.glEnableVertexAttribArray(fPosition)
         GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArr.size * 4)
 
+        updateTextTexture()
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textTextureId)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
+    }
+
+    private var preTime = -1L
+    private val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private fun updateTextTexture() {
+        val curTime = currentTimeMillis()
+        if (curTime - preTime > 2000) {
+            TextureUtils.deleteTexture(textTextureId)
+
+            val bitmap = TextureUtils.createTextBitmap(
+                sdf.format(Date(curTime)), 25, "#000000", "#00000000", 10
+            )
+            textTextureId = TextureUtils.loadBitmapTexture(bitmap)
+            bitmap.recycle()
+
+            preTime = curTime
+        }
     }
 
     override fun surfaceDestroyed() {

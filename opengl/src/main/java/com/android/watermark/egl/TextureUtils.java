@@ -100,4 +100,9 @@ public class TextureUtils {
         return textureIds[0];
     }
 
+    public static void deleteTexture(int textureId) {
+        int[] textureIds = {textureId};
+        GLES20.glDeleteTextures(1, textureIds, 0);
+    }
+
 }
