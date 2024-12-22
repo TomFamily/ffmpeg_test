@@ -10,6 +10,7 @@
         android:id="@+id/test_graphical"
         android:layout_width="200dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,11 +36,21 @@
         android:id="@+id/test_textures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.android.opengl.watermark.withCamera.Camera1GLSurfaceView
         android:id="@+id/test_camera1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+<!--    <com.android.opengl.watermark.withCamera.java.CameraGLSurfaceView-->
+    <com.android.opengl.watermark.withCamera.YGLSurfaceView
+        android:id="@+id/test_camera1_glsurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
