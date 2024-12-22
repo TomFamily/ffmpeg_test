@@ -1,6 +1,5 @@
-package com.example.camera.cameraManager;
+package com.android.opengl.utils;
 
-import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
 
 import android.graphics.SurfaceTexture;
@@ -12,7 +11,7 @@ import java.io.IOException;
 /**
  * Camera1
  */
-public class CameraManager {
+public class Camera1Manager {
 
     private Camera mCamera = null;
 

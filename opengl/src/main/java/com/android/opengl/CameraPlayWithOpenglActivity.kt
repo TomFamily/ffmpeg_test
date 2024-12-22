@@ -12,6 +12,7 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
     private lateinit var bitmapSurfaceView: SurfaceView
     private lateinit var orthogonalSurfaceView: SurfaceView
     private lateinit var texturesSurfaceView: SurfaceView
+    private lateinit var camera1OpenglSurfaceView: SurfaceView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,7 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
         bitmapSurfaceView = findViewById(R.id.test_bitmap)
         orthogonalSurfaceView = findViewById(R.id.test_orthogonal)
         texturesSurfaceView = findViewById(R.id.test_textures)
+        camera1OpenglSurfaceView = findViewById(R.id.test_camera1)
     }
 
     private fun initEvent() {
@@ -49,6 +51,12 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.test_textures_btn).setOnClickListener {
             texturesSurfaceView.also {
+                it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
+            }
+        }
+
+        findViewById<Button>(R.id.test_camera1_btn).setOnClickListener {
+            camera1OpenglSurfaceView.also {
                 it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
             }
         }

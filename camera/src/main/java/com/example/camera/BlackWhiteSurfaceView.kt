@@ -12,7 +12,7 @@ import android.util.Log
 import com.example.base.poengl.BufferUtil
 import com.example.base.poengl.ShaderUtils
 import com.example.base.utils.PermissionUtil
-import com.example.camera.cameraManager.CameraManager
+import com.example.camera.cameraManager.Camera1Manager
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -46,7 +46,7 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
     }
 
     inner class CameraRenderer(private val mContext: Context) : Renderer {
-        private val mCameraManager: CameraManager
+        private val mCamera1Manager: Camera1Manager
         private var mCameraTexture: SurfaceTexture? = null
         private var mProgram = 0
         private var uPosHandle = 0
@@ -96,7 +96,7 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
             Matrix.setIdentityM(mCameraMatrix, 0)
             Matrix.setIdentityM(mMVPMatrix, 0)
             Matrix.setIdentityM(mTempMatrix, 0)
-            mCameraManager = CameraManager()
+            mCamera1Manager = Camera1Manager()
         }
 
         override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
@@ -107,7 +107,7 @@ class BlackWhiteSurfaceView(context: Context, attributeSet: AttributeSet) :
                 ShaderUtils.createProgram(mContext, "vertex_texture.glsl", "fragment_texture.glsl")
             GLES20.glUseProgram(mProgram) //激活OpenGl程序
             createAndBindVideoTexture()
-            mCameraManager.OpenCamera(mCameraTexture) //为相机设置接收数据的SurfaceTexture
+            mCamera1Manager.OpenCamera(mCameraTexture) //为相机设置接收数据的SurfaceTexture
 
             // 获取 GLSL 中的属性
             uPosHandle = GLES20.glGetAttribLocation(mProgram, "position")
