@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener
-import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.android.opengl.utils.Camera1Manager
+import com.android.opengl.watermark.egl.TextureUtils
 import com.android.opengl.watermark.egl.YShaderUtil
 import com.example.opengl.R
 import java.nio.ByteBuffer
@@ -23,32 +23,40 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
     private var program: Int = -1
     private var vPosition: Int = -1
     private var fPosition: Int = -1
+    private var smallBitmapTextureId = -1
 
     private var vertexBuffer: FloatBuffer
     private var fragmentBuffer: FloatBuffer
 
     private lateinit var bitmap: Bitmap
     private lateinit var textures: IntArray
+    private var vboId = 0
 
     private lateinit var surfaceTexture: SurfaceTexture
     private val mCamera1Manager: Camera1Manager = Camera1Manager()
+    private val vertexArray = floatArrayOf(
+        -1f, -1f,
+        -1f, 1f,
+        1f, -1f,
+        1f, 1f,
+
+        //用来 加一个 图片水印 到左上角
+        0f, 0.5f,
+        1f, 0.5f,
+        0f, 1f,
+        1f, 1f,
+    )
+
+    private val fragmentArray = floatArrayOf(
+        0f, 1f,
+        1f, 1f,
+        0f, 0f,
+        1f, 0f
+    )
 
     init {
-        val vertexArray = floatArrayOf(
-            -1f, -1f,
-            -1f, 1f,
-            1f, -1f,
-            1f, 1f
-        )
         vertexBuffer = ByteBuffer.allocateDirect(vertexArray.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexArray)
         vertexBuffer.position(0)
-
-        val fragmentArray = floatArrayOf(
-            0f, 1f,
-            1f, 1f,
-            0f, 0f,
-            1f, 0f
-        )
         fragmentBuffer = ByteBuffer.allocateDirect(fragmentArray.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(fragmentArray)
         fragmentBuffer.position(0)
     }
@@ -65,6 +73,18 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
 
         vPosition = GLES20.glGetAttribLocation(program, "position")
         fPosition = GLES20.glGetAttribLocation(program, "inputTextureCoordinate")
+
+        //<editor-fold desc="VBO">
+        val vbo_s = IntArray(1)
+        GLES20.glGenBuffers(1, vbo_s, 0)
+        vboId = vbo_s[0]
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexArray.size * 4 + fragmentArray.size * 4, null, GLES20.GL_STATIC_DRAW)
+        GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0, vertexArray.size * 4, vertexBuffer)
+        GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, vertexArray.size * 4, fragmentArray.size * 4, fragmentBuffer)
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0)
+        //</editor-fold>
 
         textures = IntArray(1)
         //生成一个OpenGl纹理
@@ -84,6 +104,8 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glBindTexture(GLES20.GL_TEXTURE0, 0)
 
         mCamera1Manager.OpenCamera(surfaceTexture)
+
+        smallBitmapTextureId = TextureUtils.createImageTexture(context, R.drawable.ic_launcher)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -94,11 +116,12 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
 
         GLES20.glUseProgram(program)
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
 
         GLES20.glEnableVertexAttribArray(vPosition)
-        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer)
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 0)
         GLES20.glEnableVertexAttribArray(fPosition)
-        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, fragmentBuffer)
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArray.size * 4)
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         //申请纹理存储区域并设置相关参数
@@ -109,6 +132,19 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE0, 0)
+
+        drawSmallImage()
+    }
+
+    private fun drawSmallImage() {
+        GLES20.glEnableVertexAttribArray(vPosition)
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 32)
+        GLES20.glEnableVertexAttribArray(fPosition)
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArray.size * 4)
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, smallBitmapTextureId)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
 
 }
