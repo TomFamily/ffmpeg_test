@@ -7,7 +7,7 @@ import android.hardware.Camera
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.TextureView
-import com.android.utils.Utils
+import com.android.opengl.utils.Utils
 import com.example.camera.cameraManager.CameraV1
 import com.example.camera.render.CameraV1GLRenderer
 

@@ -10,7 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.TextureView;
 
-import com.android.filter.FilterEngine;
+import com.android.opengl.filter.FilterEngine;
 
 import java.nio.FloatBuffer;
 

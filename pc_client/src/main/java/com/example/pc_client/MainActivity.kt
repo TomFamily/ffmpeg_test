@@ -9,9 +9,8 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.android.withCamera.CameraPlayWithOpenglActivity
+import com.android.opengl.CameraPlayWithOpenglActivity
 import com.example.base.handler.HandlerAssistant
-import com.example.base.rxjava.testRxjava
 import com.example.camera.GLCameraActivity
 import com.example.pc_client.aidl.ICallbacklInterface
 import com.example.pc_client.aidl.IManagerInterface

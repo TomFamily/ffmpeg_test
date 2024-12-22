@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.android.TestOpenGl
 import com.example.android_media_lib.ModelTestEnter
 import com.example.android_media_lib.MyAudioRecord
 import com.example.android_media_lib.block.testBitmapDrawText
@@ -48,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         testRxjava(this)
         testReflex()
         testBinder(this)
-        TestOpenGl.test()
         ModelTestEnter.test()
         HandlerAssistant.test(2)
         testBitmapDrawText(binding.mainViewRoundIamge2, resources, com.example.base.R.drawable.ic_ffmpeg, Color.BLACK)

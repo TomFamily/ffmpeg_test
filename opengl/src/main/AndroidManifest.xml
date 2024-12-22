@@ -7,10 +7,10 @@
 
     <application>
         <activity
-            android:name="com.android.withCamera.CameraPlayWithOpenglActivity"
+            android:name="com.android.opengl.CameraPlayWithOpenglActivity"
             android:exported="false" />
         <activity
-            android:name="com.android.airhockey.OpenGlActivity"
+            android:name="com.android.opengl.airhockey.OpenGlActivity"
             android:exported="true" />
     </application>
 
