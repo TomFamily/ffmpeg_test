@@ -1,5 +1,6 @@
 package com.android.opengl.utils;
 
+import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
 
 import android.graphics.SurfaceTexture;
@@ -17,7 +18,6 @@ public class Camera1Manager {
 
     public synchronized void OpenCamera(SurfaceTexture surfaceTexture) {
         try {
-//            mCamera = Camera.open(CAMERA_FACING_FRONT);
             mCamera = Camera.open(CAMERA_FACING_FRONT);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.set("orientation", "portrait");

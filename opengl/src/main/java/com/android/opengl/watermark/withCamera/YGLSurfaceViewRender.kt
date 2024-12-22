@@ -2,8 +2,10 @@ package com.android.opengl.watermark.withCamera
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener
+import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.android.opengl.utils.Camera1Manager
@@ -28,9 +30,9 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
     private var vertexBuffer: FloatBuffer
     private var fragmentBuffer: FloatBuffer
 
-    private lateinit var bitmap: Bitmap
     private lateinit var textures: IntArray
     private var vboId = 0
+    private var yCameraFboRender = YCameraFboRender(context)
 
     private lateinit var surfaceTexture: SurfaceTexture
     private val mCamera1Manager: Camera1Manager = Camera1Manager()
@@ -62,6 +64,7 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+        yCameraFboRender.onCreate()
         GLES20.glClearColor(1.0f, 0.0f, 0.0f, 0.0f)
 
 //        val vertexSource = YShaderUtil.getRawResource(context, R.raw.screen_vert)
@@ -73,6 +76,10 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
 
         vPosition = GLES20.glGetAttribLocation(program, "position")
         fPosition = GLES20.glGetAttribLocation(program, "inputTextureCoordinate")
+
+        //设置支持透明
+        GLES20.glEnable(GLES20.GL_BLEND)
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
 
         //<editor-fold desc="VBO">
         val vbo_s = IntArray(1)
@@ -91,17 +98,16 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glGenTextures(1, textures, 0)
 
         //申请纹理存储区域并设置相关参数
-        GLES20.glBindTexture(GLES20.GL_TEXTURE0, textures[0])
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0])
 
-        // GLES11Ext.GL_TEXTURE_EXTERNAL_OES
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE0, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR.toFloat())
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE0, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR.toFloat())
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE0, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE0, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR.toFloat())
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR.toFloat())
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE)
         surfaceTexture = SurfaceTexture(textures[0])
         surfaceTexture.setOnFrameAvailableListener(listener)
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE0, 0)
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
 
         mCamera1Manager.OpenCamera(surfaceTexture)
 
@@ -110,6 +116,7 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)
+        yCameraFboRender.onChange(width, height)
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -123,28 +130,30 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glEnableVertexAttribArray(fPosition)
         GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArray.size * 4)
 
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        GLES20.glActiveTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES)
         //申请纹理存储区域并设置相关参数
-        GLES20.glBindTexture(GLES20.GL_TEXTURE0, textures[0])
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0])
 
         //从图像流中将纹理图像更新为最近的帧
         surfaceTexture.updateTexImage()
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE0, 0)
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
 
         drawSmallImage()
     }
 
     private fun drawSmallImage() {
+//        yCameraFboRender.onDraw(smallBitmapTextureId)
+
         GLES20.glEnableVertexAttribArray(vPosition)
         GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 32)
         GLES20.glEnableVertexAttribArray(fPosition)
         GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexArray.size * 4)
 
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE_2D)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, smallBitmapTextureId)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
-
 }
