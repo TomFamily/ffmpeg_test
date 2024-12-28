@@ -9,8 +9,9 @@ void main() {
     //获取此纹理（预览图像）对应坐标的颜色值
     vec4 tc = texture2D(videoTex, textureCoordinate);
     //求此颜色的灰度值
-    float color = tc.r * 0.3 + tc.g * 0.59 + tc.b * 0.11;
-    gl_FragColor = vec4(color,color,color,1.0);
+//    float color = tc.r * 0.3 + tc.g * 0.59 + tc.b * 0.11;
+//    gl_FragColor = vec4(color,color,color,1.0);
+    gl_FragColor = tc;
 }
 
 //varying mediump vec2 textureCoordinate;

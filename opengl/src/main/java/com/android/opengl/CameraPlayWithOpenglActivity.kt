@@ -5,6 +5,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.base.floating.OpenGLFloatingImage
 import com.example.opengl.R
 
 class CameraPlayWithOpenglActivity : AppCompatActivity() {
@@ -28,6 +29,8 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
         orthogonalSurfaceView = findViewById(R.id.test_orthogonal)
         texturesSurfaceView = findViewById(R.id.test_textures)
         camera1OpenglSurfaceView = findViewById(R.id.test_camera1)
+
+        OpenGLFloatingImage.setImageView(findViewById(R.id.test_image_floating))
     }
 
     private fun initEvent() {

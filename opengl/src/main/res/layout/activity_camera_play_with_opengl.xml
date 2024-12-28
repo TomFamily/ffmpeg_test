@@ -88,5 +88,13 @@
         app:layout_constraintTop_toBottomOf="@id/test_textures_btn"
         android:text="Camera1"/>
 
+    <ImageView
+        android:id="@+id/test_image_floating"
+        android:layout_width="320dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="16:9"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,6 @@
 package com.android.opengl.watermark.withCamera
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener
 import android.opengl.GLES11Ext
@@ -11,6 +9,7 @@ import android.opengl.GLSurfaceView
 import com.android.opengl.utils.Camera1Manager
 import com.android.opengl.watermark.egl.TextureUtils
 import com.android.opengl.watermark.egl.YShaderUtil
+import com.example.base.floating.OpenGLFloatingImage.loadVideoData
 import com.example.opengl.R
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -26,6 +25,8 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
     private var vPosition: Int = -1
     private var fPosition: Int = -1
     private var smallBitmapTextureId = -1
+    private var width = -1
+    private var height = -1
 
     private var vertexBuffer: FloatBuffer
     private var fragmentBuffer: FloatBuffer
@@ -115,6 +116,8 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+        this.width = width
+        this.height = height
         GLES20.glViewport(0, 0, width, height)
         yCameraFboRender.onChange(width, height)
     }
@@ -138,9 +141,20 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         surfaceTexture.updateTexImage()
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
 
+        loadVideoData()
+
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
 
         drawSmallImage()
+    }
+
+    private var preTime = -1L
+    private fun loadVideoData() {
+        val cur = System.currentTimeMillis()
+        if (cur - preTime > 500) {
+            loadVideoData(width, height)
+            preTime = cur
+        }
     }
 
     private fun drawSmallImage() {
