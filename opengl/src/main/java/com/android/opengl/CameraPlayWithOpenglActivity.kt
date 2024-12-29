@@ -1,10 +1,12 @@
 package com.android.opengl
 
 import android.os.Bundle
+import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.android.opengl.codec.CodecManager
 import com.example.base.floating.OpenGLFloatingImage
 import com.example.opengl.R
 
@@ -63,6 +65,24 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
                 it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
             }
         }
+        
+        initCodecSurface()
+    }
+
+    private fun initCodecSurface() {
+        val view = findViewById<SurfaceView>(R.id.test_codec_surface)
+        view.holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                CodecManager.initDecode(holder.surface)
+            }
+
+            override fun surfaceChanged(
+                holder: SurfaceHolder, format: Int, width: Int, height: Int
+            ) = Unit
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) = Unit
+
+        })
     }
 
 }

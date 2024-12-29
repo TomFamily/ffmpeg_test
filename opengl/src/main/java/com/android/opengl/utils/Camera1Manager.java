@@ -6,6 +6,8 @@ import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 
+import com.android.opengl.codec.CodecManager;
+
 import java.io.IOException;
 
 
@@ -18,7 +20,7 @@ public class Camera1Manager {
 
     public synchronized void OpenCamera(SurfaceTexture surfaceTexture) {
         try {
-            mCamera = Camera.open(CAMERA_FACING_FRONT);
+            mCamera = Camera.open(CAMERA_FACING_BACK);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.set("orientation", "portrait");
             // 用在 OpenGL 报错：无法设置
@@ -27,6 +29,9 @@ public class Camera1Manager {
             mCamera.setDisplayOrientation(90);
             mCamera.setParameters(parameters);
             mCamera.setPreviewTexture(surfaceTexture);
+            mCamera.setPreviewCallback((data, camera) -> {
+                CodecManager.INSTANCE.inputRawVideoData(data);
+            });
             mCamera.startPreview();
         } catch (IOException e) {
             e.printStackTrace();
