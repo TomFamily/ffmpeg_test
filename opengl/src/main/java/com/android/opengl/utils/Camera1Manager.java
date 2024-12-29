@@ -20,7 +20,7 @@ public class Camera1Manager {
 
     public synchronized void OpenCamera(SurfaceTexture surfaceTexture) {
         try {
-            mCamera = Camera.open(CAMERA_FACING_BACK);
+            mCamera = Camera.open(CAMERA_FACING_FRONT);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.set("orientation", "portrait");
             // 用在 OpenGL 报错：无法设置

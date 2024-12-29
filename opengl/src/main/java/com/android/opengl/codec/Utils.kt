@@ -33,6 +33,25 @@ fun NV21ToYUV420Planar(nv21Data: ByteArray, width: Int, height: Int): ByteArray 
     return yuv420Data
 }
 
+fun formatNV21ToNV12(nv21: ByteArray, width: Int, height: Int): ByteArray {
+    val nv12 = ByteArray(width * height * 3 / 2)
+    val frameSize = width * height
+    var j = 0
+    System.arraycopy(nv21, 0, nv12, 0, frameSize)
+    j = 0
+    while (j < frameSize / 2) {
+        nv12[frameSize + j - 1] = nv21[j + frameSize]
+        j += 2
+    }
+    j = 0
+    while (j < frameSize / 2) {
+        nv12[frameSize + j] = nv21[j + frameSize - 1]
+        j += 2
+    }
+
+    return nv12
+}
+
 /**
  * PPS 头以特定起始码（0x000001 或 0x00000001）开始
  */

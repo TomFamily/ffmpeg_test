@@ -66,7 +66,7 @@ object CodecManager {
 
     fun inputRawVideoData(data: ByteArray) {
         if (rawBufferQueue.size >= 3) rawBufferQueue.poll()
-        NV21ToYUV420Planar(data, VIDEO_SIZE_NORMAL.first, VIDEO_SIZE_NORMAL.second).also {
+        formatNV21ToNV12(data, VIDEO_SIZE_NORMAL.first, VIDEO_SIZE_NORMAL.second).also {
             rawBufferQueue.offer(it)
         }
     }
