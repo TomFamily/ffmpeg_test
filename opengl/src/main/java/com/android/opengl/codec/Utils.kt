@@ -54,75 +54,94 @@ fun formatNV21ToNV12(nv21: ByteArray, width: Int, height: Int): ByteArray {
 
 /**
  * PPS 头以特定起始码（0x000001 或 0x00000001）开始
+ * eg: 0, 0, 0, 1, 103, 66, -64, 31, -38, -127, 64, 22, -55, -88, 16, 16, 16, 60, 32, 16, -88, 0, 0, 0, 1, 104, -50, 60, -128
+ * 其中（0, 0, 0, 1, 104, -50, 60, -128） 为 pps
  */
-fun findPpsHeadIndex(data: ByteArray): Int {
-    var index = 0
-    var state = 0
-    var zeroCount = 0
+fun findPpsHeadIndex(frame: ByteArray): Int {
+    if (frame.size < 3) return -1
 
-    while (index <= data.lastIndex - 3) {
-        if (data[index].toInt() == 0x00) {
-            zeroCount++
-            if (zeroCount == 2) {
-                if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x01) {
-                    // 找到0x000001起始码，可能是PPS头
-                    state = 1
-                    zeroCount = 0
-                } else if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x00 && data[index + 3].toInt() == 0x01) {
-                    // 找到0x00000001起始码，可能是PPS头（用于某些特殊情况或扩展格式）
-                    state = 2
-                    zeroCount = 0
+    for (i in 0 until frame.size - 3) {
+        if (frame[i].toInt() == 0 && frame[i + 1].toInt() == 0) {
+            if (frame[i + 2].toInt() == 0) {
+                if (frame[i + 3].toInt() == 1 && frame[i + 4].toInt() and 0x1f == 8) {
+                    return i
+                }
+            } else if (frame[i + 2].toInt() == 1) {
+                if (frame[i + 4].toInt() and 0x1f == 8) {
+                    return i
                 }
             }
-        } else {
-            zeroCount = 0
         }
-
-        if (state == 1 || state == 2) {
-            // 检查后续字节是否符合PPS头的格式（这里简单检查长度字段是否合理，实际应用中可能需要更严格的检查）
-            val length = ((data[index + state + 1].toInt() and 0xff) shl 8) or (data[index + state + 2].toInt() and 0xff)
-            if (length in 1..99999 && index + state + 3 + length <= data.size) {
-                // 长度合理且不超出数据范围，认为找到了PPS头
-                return index + state
-            } else {
-                // 长度不合理，继续查找
-                state = 0
-            }
-        }
-
-        index++
     }
 
-    return -1 // 未找到PPS头
+    return -1
 }
 
 /**
  * NAL 单元是基本的数据单元，用于封装视频数据（如 SPS、PPS、视频帧等），每个 NAL 单元以特定的起始码（0x000001 或 0x00000001）开头。
  */
-fun findNextNal(data: ByteArray, startIndex: Int, searchLength: Int): Int {
-    var index = startIndex
-    var zeroCount = 0
-
-    while (index < startIndex + searchLength - 3) {
-        if (data[index].toInt() == 0x00) {
-            zeroCount++
-            if (zeroCount == 2) {
-                if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x01) {
-                    // 找到0x000001起始码，可能是下一个NAL单元的开始
-                    return index
-                } else if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x00 && data[index + 3].toInt() == 0x01) {
-                    // 找到0x00000001起始码，可能是下一个NAL单元的开始（用于某些特殊情况或扩展格式）
-                    return index + 1
+fun findNextNal(data: ByteArray, start: Int, length: Int): Int {
+    if (start >= 0 && length > 0 && start + length <= data.size) {
+        var curStatus = 0
+        val lastIndex = start + length
+        for (i in start until lastIndex) {
+            when (data[i].toInt() and 255) {
+                0 -> if (curStatus < 2) ++curStatus
+                1 -> {
+                    if (curStatus == 2) return i - 2
+                    curStatus = 0
                 }
+                else -> curStatus = 0
             }
-        } else {
-            zeroCount = 0
         }
-        index++
     }
-
-    return -1 // 未找到下一个NAL单元
+    return -1
 }
+
+fun findH264SpsPps(data: ByteArray): Pair<ByteArray, ByteArray>? {
+    if (data.size > 5 && data[4].toInt() and 0x1f == 7) {
+        val ppsPosition = findPpsHeadIndex(data)
+        var sliceHead = findNextNal(data, ppsPosition + 4, data.size - ppsPosition - 4)
+        var ppsLen = data.size - ppsPosition
+        if ((sliceHead >= 0)) {
+            if (sliceHead > 1 && data[sliceHead - 1].toInt() == 0) {
+                sliceHead -= 1
+            }
+            ppsLen = sliceHead - ppsPosition
+        }
+        val sps = ByteArray(ppsPosition)
+        val pps = ByteArray(ppsLen)
+        System.arraycopy(data, 0, sps, 0, sps.size)
+        System.arraycopy(data, ppsPosition, pps, 0, pps.size)
+        return sps to pps
+    }
+    return null
+}
+
+//fun findNextNal(data: ByteArray, startIndex: Int, searchLength: Int): Int {
+//    var index = startIndex
+//    var zeroCount = 0
+//
+//    while (index < startIndex + searchLength - 3) {
+//        if (data[index].toInt() == 0x00) {
+//            zeroCount++
+//            if (zeroCount == 2) {
+//                if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x01) {
+//                    // 找到0x000001起始码，可能是下一个NAL单元的开始
+//                    return index
+//                } else if (data[index + 1].toInt() == 0x00 && data[index + 2].toInt() == 0x00 && data[index + 3].toInt() == 0x01) {
+//                    // 找到0x00000001起始码，可能是下一个NAL单元的开始（用于某些特殊情况或扩展格式）
+//                    return index + 1
+//                }
+//            }
+//        } else {
+//            zeroCount = 0
+//        }
+//        index++
+//    }
+//
+//    return -1 // 未找到下一个NAL单元
+//}
 
 /**
  * 没验证过准确性

@@ -59,6 +59,7 @@ internal class MediaCodecManagerEncode(
 
             override fun onOutputFormatChanged(codec: MediaCodec, format: MediaFormat) {
                 Log.d(TAG, "onOutputFormatChanged format: $format")
+                // 获取 sps、pps 方法一
                 if (videoType == H264) {
                     val csd0Buffer = format.getByteBuffer("csd-0")
                     val csd1Buffer = format.getByteBuffer("csd-1")
@@ -158,9 +159,19 @@ internal class MediaCodecManagerEncode(
         buffer.get(data)
         if (PRINT_FREQUENT_LOG) Log.d(TAG, "dealEncodeFrameData1：${bufferInfo.size}")
 
-        if (data.size > 5 && data[4].toInt() and 0x1f == 7) {
-            // TODO: 完善 获取 sps pps 逻辑
+        //<editor-fold desc="获取 sps、pps 方法二">
+        if ((mSpsBytes == null || mPpsBytes == null) && data.size > 5 && data[4].toInt() and 0x1f == 7) {
+            Log.d(TAG, "dealEncodeFrameData 2：${data.contentToString()}")
+            findH264SpsPps(data)?.also {
+                mSpsBytes = it.first
+                mPpsBytes = it.second
+            }
+            Log.d(TAG, "dealEncodeFrameData mSpsBytes: ${mSpsBytes.contentToString()}")
+            Log.d(TAG, "dealEncodeFrameData mPpsBytes: ${mPpsBytes.contentToString()}")
+            if (mSpsBytes != null && mPpsBytes != null && mSpsBytes!!.size + mPpsBytes!!.size == data.size) return
         }
+        //</editor-fold>
+
         mPpsBytes?.let { mPpsBytesObservable.onNext(it) }
         mSpsBytes?.let { mSpsBytesObservable.onNext(it) }
         buffer.position(bufferInfo.offset)
