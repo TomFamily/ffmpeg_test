@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
 import com.android.opengl.watermark.egl.TextureUtils;
-import com.android.opengl.watermark.egl.YShaderUtil;
+import com.android.opengl.watermark.egl.ShaderUtil;
 import com.example.opengl.R;
 
 import java.nio.ByteBuffer;
@@ -82,10 +82,10 @@ public class YCameraFboRender {
 
     public void onCreate() {
 
-        String vertexSource = YShaderUtil.getRawResource(mContext, R.raw.screen_vert);
-        String fragmentSource = YShaderUtil.getRawResource(mContext, R.raw.screen_frag);
+        String vertexSource = ShaderUtil.getRawResource(mContext, R.raw.screen_vert);
+        String fragmentSource = ShaderUtil.getRawResource(mContext, R.raw.screen_frag);
 
-        program = YShaderUtil.createProgram(vertexSource, fragmentSource);
+        program = ShaderUtil.createProgram(vertexSource, fragmentSource);
 
         vPosition = GLES20.glGetAttribLocation(program, "vPosition");
         fPosition = GLES20.glGetAttribLocation(program, "fPosition");

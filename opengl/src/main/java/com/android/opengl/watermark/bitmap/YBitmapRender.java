@@ -8,7 +8,7 @@ import android.opengl.GLUtils;
 import android.util.Log;
 
 import com.android.opengl.watermark.egl.YGLSurfaceView;
-import com.android.opengl.watermark.egl.YShaderUtil;
+import com.android.opengl.watermark.egl.ShaderUtil;
 import com.example.opengl.R;
 
 import java.nio.ByteBuffer;
@@ -62,11 +62,11 @@ public class YBitmapRender implements YGLSurfaceView.YGLRender {
     @Override
     public void onSurfaceCreated() {
         //加载顶点着色器 shader
-        String vertexSource = YShaderUtil.getRawResource(mContext, R.raw.screen_vert);
+        String vertexSource = ShaderUtil.getRawResource(mContext, R.raw.screen_vert);
         //加载片元着色器 shader
-        String fragmentSource = YShaderUtil.getRawResource(mContext, R.raw.screen_frag);
+        String fragmentSource = ShaderUtil.getRawResource(mContext, R.raw.screen_frag);
         //获取源程序
-        program = YShaderUtil.createProgram(vertexSource, fragmentSource);
+        program = ShaderUtil.createProgram(vertexSource, fragmentSource);
         //从渲染程序中得到着顶点色器中的属性
         vPosition = GLES20.glGetAttribLocation(program, "vPosition");
         //从渲染程序中得到片元着色器中的属性

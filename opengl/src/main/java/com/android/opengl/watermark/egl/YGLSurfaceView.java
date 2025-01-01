@@ -106,7 +106,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     static class YEGLThread extends Thread {
 
         private WeakReference<YGLSurfaceView> yGlSurfaceViewWeakReference;
-        private YEglHelper eglHelper = null;
+        private EglHelper eglHelper = null;
         private Object object = null;
 
         private boolean isExit = false;
@@ -127,7 +127,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             isExit = false;
             isStart = false;
             object = new Object();
-            eglHelper = new YEglHelper();
+            eglHelper = new EglHelper();
             eglHelper.initEgl(yGlSurfaceViewWeakReference.get().surface, yGlSurfaceViewWeakReference.get().eglContext);
 
             while (true) {

@@ -7,7 +7,7 @@ import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.opengl.Matrix
 import com.android.opengl.watermark.egl.YGLSurfaceView
-import com.android.opengl.watermark.egl.YShaderUtil
+import com.android.opengl.watermark.egl.ShaderUtil
 import com.example.opengl.R
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -60,9 +60,9 @@ class BitmapOrthogonalRender(val context: Context): YGLSurfaceView.YGLRender {
     }
 
     override fun onSurfaceCreated() {
-        val vertexSource = YShaderUtil.getRawResource(context, R.raw.screen_vert_matrix)
-        val fragmentSource = YShaderUtil.getRawResource(context, R.raw.screen_frag)
-        program = YShaderUtil.createProgram(vertexSource, fragmentSource)
+        val vertexSource = ShaderUtil.getRawResource(context, R.raw.screen_vert_matrix)
+        val fragmentSource = ShaderUtil.getRawResource(context, R.raw.screen_frag)
+        program = ShaderUtil.createProgram(vertexSource, fragmentSource)
         vPosition = GLES20.glGetAttribLocation(program, "vPosition")
         fPosition = GLES20.glGetAttribLocation(program, "fPosition")
         //从渲染程序中得到投影的属性

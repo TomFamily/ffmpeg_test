@@ -8,7 +8,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.android.opengl.utils.Camera1Manager
 import com.android.opengl.watermark.egl.TextureUtils
-import com.android.opengl.watermark.egl.YShaderUtil
+import com.android.opengl.watermark.egl.ShaderUtil
 import com.example.base.floating.OpenGLFloatingImage.loadVideoData
 import com.example.opengl.R
 import java.nio.ByteBuffer
@@ -70,10 +70,10 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
 
 //        val vertexSource = YShaderUtil.getRawResource(context, R.raw.screen_vert)
 //        val fragmentSource = YShaderUtil.getRawResource(context, R.raw.screen_frag)
-        val vertexSource = YShaderUtil.getRawResource(context, R.raw.vertex_texture)
-        val fragmentSource = YShaderUtil.getRawResource(context, R.raw.fragment_texture)
+        val vertexSource = ShaderUtil.getRawResource(context, R.raw.vertex_texture)
+        val fragmentSource = ShaderUtil.getRawResource(context, R.raw.fragment_texture)
 
-        program = YShaderUtil.createProgram(vertexSource, fragmentSource)
+        program = ShaderUtil.createProgram(vertexSource, fragmentSource)
 
         vPosition = GLES20.glGetAttribLocation(program, "position")
         fPosition = GLES20.glGetAttribLocation(program, "inputTextureCoordinate")

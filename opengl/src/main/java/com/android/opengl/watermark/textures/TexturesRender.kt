@@ -7,7 +7,7 @@ import android.opengl.GLES20
 import android.opengl.GLUtils
 import com.android.opengl.watermark.egl.TextureUtils
 import com.android.opengl.watermark.egl.YGLSurfaceView
-import com.android.opengl.watermark.egl.YShaderUtil
+import com.android.opengl.watermark.egl.ShaderUtil
 import com.example.opengl.R
 import java.lang.System.currentTimeMillis
 import java.nio.ByteBuffer
@@ -62,9 +62,9 @@ class TexturesRender(val context: Context): YGLSurfaceView.YGLRender {
     }
 
     override fun onSurfaceCreated() {
-        val vertexSource = YShaderUtil.getRawResource(context, R.raw.screen_vert)
-        val fragmentSource = YShaderUtil.getRawResource(context, R.raw.screen_frag)
-        program = YShaderUtil.createProgram(vertexSource, fragmentSource)
+        val vertexSource = ShaderUtil.getRawResource(context, R.raw.screen_vert)
+        val fragmentSource = ShaderUtil.getRawResource(context, R.raw.screen_frag)
+        program = ShaderUtil.createProgram(vertexSource, fragmentSource)
 
         vPosition = GLES20.glGetAttribLocation(program, "vPosition")
         fPosition = GLES20.glGetAttribLocation(program, "fPosition")
