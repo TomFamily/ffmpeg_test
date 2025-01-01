@@ -1,4 +1,4 @@
-package com.android.opengl.watermark.egl;
+package com.android.opengl.base.egl;
 
 import android.opengl.EGL14;
 import android.view.Surface;

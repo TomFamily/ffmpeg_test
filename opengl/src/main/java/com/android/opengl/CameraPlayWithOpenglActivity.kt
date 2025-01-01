@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.android.opengl.codec.CodecManager
+import com.android.opengl.offscreen.FboSurfaceView
 import com.example.base.floating.OpenGLFloatingImage
 import com.example.opengl.R
 
@@ -65,9 +66,19 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
                 it.visibility = if (it.visibility == View.GONE) View.VISIBLE else View.GONE
             }
         }
+
+        findViewById<Button>(R.id.test_fbo_btn).setOnClickListener {
+            testFBO()
+        }
         
         initCodecSurface()
     }
+
+    private lateinit var mFboSurfaceView: FboSurfaceView
+    private fun testFBO() {
+        mFboSurfaceView = FboSurfaceView(this)
+    }
+
 
     private fun initCodecSurface() {
         val view = findViewById<SurfaceView>(R.id.test_codec_surface)

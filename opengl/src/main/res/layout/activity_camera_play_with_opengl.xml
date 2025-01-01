@@ -98,6 +98,14 @@
         app:layout_constraintTop_toBottomOf="@id/test_textures_btn"
         android:text="Camera1"/>
 
+    <Button
+        android:id="@+id/test_fbo_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/test_graphical_btn"
+        app:layout_constraintTop_toBottomOf="@id/test_camera1_btn"
+        android:text="FBO"/>
+
     <ImageView
         android:id="@+id/test_image_floating"
         android:layout_width="320dp"

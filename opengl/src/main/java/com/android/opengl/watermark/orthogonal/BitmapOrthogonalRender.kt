@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.opengl.Matrix
-import com.android.opengl.watermark.egl.YGLSurfaceView
-import com.android.opengl.watermark.egl.ShaderUtil
+import com.android.opengl.base.egl.YGLSurfaceView
+import com.android.opengl.base.ShaderUtil
 import com.example.opengl.R
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

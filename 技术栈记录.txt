@@ -1,4 +1,4 @@
 1、Android 编解码器：com.android.opengl.codec
 2、自定义 OpenGL 环境：com.android.opengl.watermark.egl
 3、OpenGL 水印：com.android.opengl.watermark
-4、OpenGL 离屏渲染 todo
+4、OpenGL 离屏渲染 com.android.opengl.offscreen

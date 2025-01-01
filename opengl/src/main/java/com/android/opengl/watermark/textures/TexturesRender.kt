@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.opengl.GLUtils
-import com.android.opengl.watermark.egl.TextureUtils
-import com.android.opengl.watermark.egl.YGLSurfaceView
-import com.android.opengl.watermark.egl.ShaderUtil
+import com.android.opengl.base.TextureUtils
+import com.android.opengl.base.egl.YGLSurfaceView
+import com.android.opengl.base.ShaderUtil
 import com.example.opengl.R
 import java.lang.System.currentTimeMillis
 import java.nio.ByteBuffer

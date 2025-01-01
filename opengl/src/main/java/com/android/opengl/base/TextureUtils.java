@@ -1,4 +1,4 @@
-package com.android.opengl.watermark.egl;
+package com.android.opengl.base;
 
 import android.content.Context;
 import android.graphics.Bitmap;

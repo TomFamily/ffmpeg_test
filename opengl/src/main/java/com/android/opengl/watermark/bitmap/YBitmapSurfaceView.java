@@ -3,7 +3,7 @@ package com.android.opengl.watermark.bitmap;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.android.opengl.watermark.egl.YGLSurfaceView;
+import com.android.opengl.base.egl.YGLSurfaceView;
 
 /**
  * author : York

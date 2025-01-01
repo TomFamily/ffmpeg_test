@@ -1,41 +1,31 @@
-package com.android.opengl.watermark.egl;
+package com.android.opengl.base.egl_offscreen;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
 import javax.microedition.khronos.egl.EGLContext;
 
-/**
- * author : York
- * date   : 2020/12/17 21:57
- * desc   : 自定义的 GLSurfaceView 继成了 SurfaceView，并实现其CallBack回调
- */
-public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-
-    private Surface surface;
+public class OffscreenSurfaceView implements MyCallback {
+    private static final String TAG = "OffscreenSurfaceView";
     private EGLContext eglContext;
     private YEGLThread yEGLThread;
-    private YGLRender yGLRender;
+    private OffscreenGLRender yGLRender;
     public final static int RENDERMODE_WHEN_DIRTY = 0;//手动刷新
     public final static int RENDERMODE_CONTINUOUSLY = 1;//自动刷新
 
     private int mRenderMode = RENDERMODE_CONTINUOUSLY;
 
-    public YGLSurfaceView(Context context) {
+    public OffscreenSurfaceView(Context context) {
         this(context, null);
     }
 
-    public YGLSurfaceView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        getHolder().addCallback(this);
+    public OffscreenSurfaceView(Context context, AttributeSet attrs) {
     }
 
-    public void setRender(YGLRender yRender) {
+    public void setRender(OffscreenGLRender yRender) {
         this.yGLRender = yRender;
     }
 
@@ -47,8 +37,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     //添加设置Surface和EglContext的方法
-    public void setSurfaceAndEglContext(Surface surface, EGLContext eglContext) {
-        this.surface = surface;
+    public void setSurfaceAndEglContext(EGLContext eglContext) {
         this.eglContext = eglContext;
     }
 
@@ -67,18 +56,14 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        if (surface == null) {
-            surface = holder.getSurface();
-        }
-        yEGLThread = new YEGLThread(new WeakReference<YGLSurfaceView>(this));
+    public void surfaceCreated() {
+        yEGLThread = new YEGLThread(new WeakReference<OffscreenSurfaceView>(this));
         yEGLThread.isCreate = true;
         yEGLThread.start();
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+    public void surfaceChanged(int width, int height) {
         yEGLThread.width = width;
         yEGLThread.height = height;
         yEGLThread.isChange = true;
@@ -86,14 +71,19 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed() {
         yEGLThread.onDestroy();
         yEGLThread = null;
-        surface = null;
         eglContext = null;
     }
 
-    public interface YGLRender {
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Log.d(TAG, "finalize: ");
+    }
+
+    public interface OffscreenGLRender {
         void onSurfaceCreated();
 
         void onSurfaceChanged(int width, int height);
@@ -105,7 +95,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
     static class YEGLThread extends Thread {
 
-        private WeakReference<YGLSurfaceView> yGlSurfaceViewWeakReference;
+        private WeakReference<OffscreenSurfaceView> yGlSurfaceViewWeakReference;
         private EglHelper eglHelper = null;
         private Object object = null;
 
@@ -117,7 +107,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         private int width;
         private int height;
 
-        public YEGLThread(WeakReference<YGLSurfaceView> yglSurfaceViewWeakReference) {
+        public YEGLThread(WeakReference<OffscreenSurfaceView> yglSurfaceViewWeakReference) {
             this.yGlSurfaceViewWeakReference = yglSurfaceViewWeakReference;
         }
 
@@ -128,7 +118,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             isStart = false;
             object = new Object();
             eglHelper = new EglHelper();
-            eglHelper.initEgl(yGlSurfaceViewWeakReference.get().surface, yGlSurfaceViewWeakReference.get().eglContext);
+            eglHelper.initEglOffscreen(yGlSurfaceViewWeakReference.get().eglContext);
 
             while (true) {
                 if (isExit) {
@@ -183,7 +173,6 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                     yGlSurfaceViewWeakReference.get().yGLRender.onDrawFrame();
                 }
                 eglHelper.swapBuffers();
-
             }
         }
 
@@ -196,6 +185,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         }
 
         public void onDestroy() {
+            Log.d(TAG, "onDestroy: ");
             isExit = true;
             requestRender();
             yGlSurfaceViewWeakReference.get().yGLRender.surfaceDestroyed();

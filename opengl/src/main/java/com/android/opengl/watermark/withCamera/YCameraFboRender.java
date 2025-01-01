@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
-import com.android.opengl.watermark.egl.TextureUtils;
-import com.android.opengl.watermark.egl.ShaderUtil;
+import com.android.opengl.base.TextureUtils;
+import com.android.opengl.base.ShaderUtil;
 import com.example.opengl.R;
 
 import java.nio.ByteBuffer;

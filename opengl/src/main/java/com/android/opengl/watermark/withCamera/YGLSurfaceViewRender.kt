@@ -7,8 +7,8 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.android.opengl.utils.Camera1Manager
-import com.android.opengl.watermark.egl.TextureUtils
-import com.android.opengl.watermark.egl.ShaderUtil
+import com.android.opengl.base.TextureUtils
+import com.android.opengl.base.ShaderUtil
 import com.example.base.floating.OpenGLFloatingImage.loadVideoData
 import com.example.opengl.R
 import java.nio.ByteBuffer
@@ -141,7 +141,7 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         surfaceTexture.updateTexImage()
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
 
-        loadVideoData()
+        // loadVideoData()
 
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
 

@@ -1,4 +1,4 @@
-package com.android.opengl.watermark.egl;
+package com.android.opengl.base;
 
 import android.opengl.GLES20;
 import android.util.Log;
