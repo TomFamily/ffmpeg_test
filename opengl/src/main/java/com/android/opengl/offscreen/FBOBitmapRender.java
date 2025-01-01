@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
  * 当需要对纹理进行多次渲染时，而这些渲染采样是不需要展示给用户看的，就可以用一个单独的缓冲对象（离屏渲染）
  * 来存储多次渲染采样的结果，等处理完后再显示到窗口上。
  */
-public class FboRender implements OffscreenSurfaceView.OffscreenGLRender {
+public class FBOBitmapRender implements OffscreenSurfaceView.OffscreenGLRender {
     private static final String TAG = "YUsedFboRender";
 
     private final Context mContext;
@@ -40,7 +40,7 @@ public class FboRender implements OffscreenSurfaceView.OffscreenGLRender {
     private int fboWidth;
     private int fboHeight;
 
-    private final FboBaseRender yFboRender;
+    private final FBOBitmapEmbedRender yFboRender;
     //顶点坐标
     float[] vertexData = {
             -1f, -1f,
@@ -58,11 +58,11 @@ public class FboRender implements OffscreenSurfaceView.OffscreenGLRender {
     };
 
 
-    public FboRender(Context context, int width, int height) {
+    public FBOBitmapRender(Context context, int width, int height) {
         this.mContext = context;
         fboWidth = width;
         fboHeight = height;
-        yFboRender = new FboBaseRender(context);
+        yFboRender = new FBOBitmapEmbedRender(context);
         //读取顶点坐标
         vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexData);
         vertexBuffer.position(0);
@@ -179,7 +179,7 @@ public class FboRender implements OffscreenSurfaceView.OffscreenGLRender {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         
-        OpenGLFloatingImage.INSTANCE.loadVideoData(fboWidth, fboHeight); // TODO: 2025/1/2  
+        OpenGLFloatingImage.INSTANCE.loadVideoData(fboWidth, fboHeight);
         
         //解绑 FBO纹理
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);

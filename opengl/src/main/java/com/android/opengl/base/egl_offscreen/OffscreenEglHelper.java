@@ -13,7 +13,7 @@ import javax.microedition.khronos.egl.EGLSurface;
  * date   : 2020/12/17 22:11
  * desc   : 搭建 EGL 环境类
  */
-public class EglHelper {
+public class OffscreenEglHelper {
 
     private EGL10 mEgl;//EGL实例
     private EGLDisplay mEglDisplay;//默认的显示社保

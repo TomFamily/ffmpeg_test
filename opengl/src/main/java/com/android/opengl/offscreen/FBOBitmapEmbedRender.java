@@ -15,7 +15,7 @@ import java.nio.FloatBuffer;
  * date   : 2020/12/20 20:29
  * desc   :
  */
-public class FboBaseRender {
+public class FBOBitmapEmbedRender {
 
     private final Context context;
     private final FloatBuffer vertexBuffer;
@@ -40,7 +40,7 @@ public class FboBaseRender {
             1f, 1f
     };
 
-    public FboBaseRender(Context context) {
+    public FBOBitmapEmbedRender(Context context) {
         this.context = context;
 
         vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4)

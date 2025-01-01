@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.android.opengl.codec.CodecManager
-import com.android.opengl.offscreen.FboSurfaceView
+import com.android.opengl.offscreen.FBOBitmapSurfaceView
 import com.example.base.floating.OpenGLFloatingImage
 import com.example.opengl.R
 
@@ -74,9 +74,9 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
         initCodecSurface()
     }
 
-    private lateinit var mFboSurfaceView: FboSurfaceView
+    private lateinit var mFboSurfaceView: FBOBitmapSurfaceView
     private fun testFBO() {
-        mFboSurfaceView = FboSurfaceView(this)
+        mFboSurfaceView = FBOBitmapSurfaceView(this)
     }
 
 

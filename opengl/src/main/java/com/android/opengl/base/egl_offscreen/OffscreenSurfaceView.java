@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 
 import javax.microedition.khronos.egl.EGLContext;
 
-public class OffscreenSurfaceView implements MyCallback {
+public class OffscreenSurfaceView implements OffscreenCallback {
     private static final String TAG = "OffscreenSurfaceView";
     private EGLContext eglContext;
     private YEGLThread yEGLThread;
@@ -96,7 +96,7 @@ public class OffscreenSurfaceView implements MyCallback {
     static class YEGLThread extends Thread {
 
         private WeakReference<OffscreenSurfaceView> yGlSurfaceViewWeakReference;
-        private EglHelper eglHelper = null;
+        private OffscreenEglHelper eglHelper = null;
         private Object object = null;
 
         private boolean isExit = false;
@@ -117,7 +117,7 @@ public class OffscreenSurfaceView implements MyCallback {
             isExit = false;
             isStart = false;
             object = new Object();
-            eglHelper = new EglHelper();
+            eglHelper = new OffscreenEglHelper();
             eglHelper.initEglOffscreen(yGlSurfaceViewWeakReference.get().eglContext);
 
             while (true) {

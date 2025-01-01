@@ -11,16 +11,16 @@ import com.android.opengl.base.egl_offscreen.OffscreenSurfaceView;
  * date   : 2020/12/20 20:35
  * desc   :
  */
-public class FboSurfaceView extends OffscreenSurfaceView {
+public class FBOBitmapSurfaceView extends OffscreenSurfaceView {
     private Pair<Integer, Integer> size = new Pair(1080, 720);
 
-    public FboSurfaceView(Context context) {
+    public FBOBitmapSurfaceView(Context context) {
         this(context, null);
     }
 
-    public FboSurfaceView(Context context, AttributeSet attrs) {
+    public FBOBitmapSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        FboRender yUsedFboRender = new FboRender(context, size.first, size.second);
+        FBOBitmapRender yUsedFboRender = new FBOBitmapRender(context, size.first, size.second);
         setRender(yUsedFboRender);
         this.surfaceCreated();
         this.surfaceChanged(size.first, size.second);
