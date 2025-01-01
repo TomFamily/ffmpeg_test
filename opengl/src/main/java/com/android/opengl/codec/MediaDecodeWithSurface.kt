@@ -64,7 +64,7 @@ internal class MediaDecodeWithSurface(
             while (true) {
                 if (inputH264BufferQueue.isEmpty() || inputBufferIndex.isEmpty() || !::mediaDeCodec.isInitialized) {
                     Thread.sleep(threadSleepDuration)
-                    Log.e(TAG, "startProgress: ${inputH264BufferQueue.size} ${inputBufferIndex.size} ${::mediaDeCodec.isInitialized}")
+                    // Log.e(TAG, "startProgress: ${inputH264BufferQueue.size} ${inputBufferIndex.size} ${::mediaDeCodec.isInitialized}")
                 } else {
                     val inputIndex = inputBufferIndex.poll()!!
                     val data = inputH264BufferQueue.poll()!!

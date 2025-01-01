@@ -76,7 +76,7 @@ class CameraPlayWithOpenglActivity : AppCompatActivity() {
 
     private lateinit var mFboSurfaceView: FBOBitmapSurfaceView
     private fun testFBO() {
-        mFboSurfaceView = FBOBitmapSurfaceView(this)
+        if(!::mFboSurfaceView.isInitialized) mFboSurfaceView = FBOBitmapSurfaceView(this)
     }
 
 

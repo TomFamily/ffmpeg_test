@@ -170,4 +170,8 @@ class YGLSurfaceViewRender(val context: Context, private val listener: OnFrameAv
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
+
+    companion object {
+        private const val TAG = "YGLSurfaceViewRender"
+    }
 }

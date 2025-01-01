@@ -147,7 +147,7 @@ public class YGLSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                         }
                     } else if (yGlSurfaceViewWeakReference.get().mRenderMode == RENDERMODE_CONTINUOUSLY) {
                         try {
-                            Thread.sleep(1000 / 100);
+                            Thread.sleep(1000 / 100); // TODO: 2025/1/2 可以在这里控制刷新频率（降帧） 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
